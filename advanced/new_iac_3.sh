@@ -20,11 +20,6 @@ while true; do
             continue
 
         else
-            if [ "$ans_w1" != "y" ] && [ "$ans_w1" != "n" ]; then
-                printf "\nDigite um comando válido.\n"
-                continue
-            fi
-
             if [ "$ans_a1" = "y" ]; then
                 read -n 1 -p "Deseja criar via docker? [y/n] " ans_db1
                 printf "\n...\n"
@@ -50,3 +45,6 @@ done
 if [ $ans_a1 = "y" ]; then
     ./modules/new_database.sh "$ans_db1" "$ans_db2" "$ans_db3" "$ans_db4"
 fi
+
+## - Fim
+printf "\nFinalizado.\n"

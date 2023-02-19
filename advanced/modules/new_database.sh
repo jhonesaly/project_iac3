@@ -36,23 +36,26 @@ if [ "$ans_db1" = "y" ]; then
 
     # Inicia o contêiner do MySQL
 
+    printf "\nCriando Banco de Dados...\n"
+
     sudo docker-compose up -d
 
 elif [ "$ans_db1" = "y" ]; then
+    printf "\nInstalando MySql...\n"
     # Instalar o MySQL
     sudo apt-get update
     sudo apt-get install -y mysql-server
-
-    # Executar o script de segurança interativo do MySQL
     sudo mysql_secure_installation
 
-    # Criar um novo banco de dados
+    ## Criar um novo banco de dados
+    printf "\nCriando Banco de Dados...\n"
+    
     sudo mysql -u root -p -e "CREATE DATABASE $ans_db2;"
 
-    # Criar um novo usuário e conceder todos os privilégios ao banco de dados
+    ## Criar um novo usuário e conceder todos os privilégios ao banco de dados
     sudo mysql -u root -p -e "GRANT ALL PRIVILEGES ON $ans_db2.* TO '$ans_db3'@'localhost' IDENTIFIED BY '$ans_db4';"
 
-    # Reiniciar o MySQL para aplicar as alterações
+    ## Reiniciar o MySQL para aplicar as alterações
     sudo service mysql restart
 
 fi
