@@ -1,4 +1,53 @@
-Docker: Utilização prática no cenário de Microsserviços
-Denilson Bonatti, Instrutor - Digital Innovation One
+# Desafio de Projeto 3 - Bootcamp de Linux
 
-Muito se tem falado de containers e consequentemente do Docker no ambiente de desenvolvimento. Mas qual a real função de um container no cenários de microsserviços? Qual a real função e quais exemplos práticos podem ser aplicados no dia a dia? Essas são algumas das questões que serão abordadas de forma prática pelo Expert Instructor Denilson Bonatti nesta Live Coding. IMPORTANTE: Agora nossas Live Codings acontecerão no canal oficial da dio._ no YouTube. Então, já corre lá e ative o lembrete! Pré-requisitos: Conhecimentos básicos em Linux, Docker e AWS.
+# Sumário
+
+- [Proposta do Projeto](#Proposta-do-Projeto)
+    - [Objetivos do Projeto](#Objetivos-do-Projeto)
+    - [Requerimentos do Projeto](#Requerimentos-do-Projeto)
+- [Organização do Repositório](#organização-do-repositório)
+    - [basic](#basic)
+    - [advanced](#advanced)
+- [Definições Importantes](#Definições-Importantes)
+- [Montando na sua máquina](#Montando-na-sua-Máquina)
+- [Observações](#Observações)
+
+------
+# Proposta do Projeto
+
+Utilização Prática do Docker no Cenário de Microsserviços
+
+## Objetivos do Projeto
+
+Neste desafio, você deverá replicar as aulas ministradas pelo instrutor Denilson Bonatti, criando um repositório próprio e, nesse contexto, conheça o Docker, implemente uma estrutura de Microsserviços com as melhores práticas do mercado internacional e ganhe independência entre aplicações e infraestrutura.
+
+
+------
+# Organização do repositório
+
+## basic
+
+
+## advanced
+
+
+------
+# Definições Importantes
+
+## Docker
+
+## Docker Swarm
+
+## AWS
+
+
+------
+# Montando na sua máquina
+
+    
+
+------
+# Observações
+
+
+[Voltar ao topo](#sumário)
