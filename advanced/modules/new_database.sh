@@ -7,9 +7,9 @@ ans_db4="$4" #db password
 
 printf "\nInstalando MySql...\n"
 # Instalar o MySQL
-sudo apt-get update
-sudo apt-get install -y mysql-server
-sudo mysql_secure_installation
+apt-get update
+apt-get install mysql -y
+apt-get install mysql-server -y
 
 if [ "$ans_db1" = "y" ]; then
     printf "\nInstalando Docker...\n"
