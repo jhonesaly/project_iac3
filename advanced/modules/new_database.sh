@@ -56,7 +56,3 @@ elif [ "$ans_db1" = "y" ]; then
     sudo service mysql restart
 
 fi
-
-
-
-

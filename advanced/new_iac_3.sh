@@ -20,6 +20,11 @@ while true; do
             continue
 
         else
+            if [ "$ans_w1" != "y" ] && [ "$ans_w1" != "n" ]; then
+                printf "\nDigite um comando válido.\n"
+                continue
+            fi
+
             if [ "$ans_a1" = "y" ]; then
                 read -n 1 -p "Deseja criar via docker? [y/n] " ans_db1
                 printf "\n...\n"
@@ -29,14 +34,6 @@ while true; do
                 printf "\n...\n"
                 read -p "Digite a senha do administrador do banco de dados: " ans_db4
                 printf "\n...\n"
-
-
-            if [ "$ans_w1" != "y" ] && [ "$ans_w1" != "n" ]; then
-                printf "\nDigite um comando válido.\n"
-                continue
-            
-            elif [ $ans_w1 = "y" ]; then
-                read -p "coloque o endereço do repositório para fazer o download: " ans_w2
             fi
             
             question_number=2
