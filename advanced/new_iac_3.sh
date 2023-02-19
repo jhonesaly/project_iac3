@@ -40,6 +40,9 @@ while true; do
             continue
         fi
     fi
+    
+    printf "\nConfigurando...\n"
+    break
 done
 
 ##  - Cria banco de dados
