@@ -25,7 +25,9 @@ while true; do
                 printf "\n...\n"
                 read -p "Digite o nome do banco de dados: " ans_db2
                 printf "\n...\n"
-                read -p "Digite a senha do administrador do banco de dados: " ans_db3
+                read -p "Digite o nome do administrador do banco de dados: " ans_db3
+                printf "\n...\n"
+                read -p "Digite a senha do administrador do banco de dados: " ans_db4
                 printf "\n...\n"
 
 
@@ -46,5 +48,5 @@ done
 ##  - Cria banco de dados
 
 if [ $ans_a1 = "y" ]; then
-    ./modules/new_database.sh 
+    ./modules/new_database.sh "$ans_db1" "$ans_db2" "$ans_db3" "$ans_db4"
 fi
