@@ -15,7 +15,6 @@ if [ "$ans_db1" = "y" ]; then
     printf "\nInstalando Docker...\n"
     
     apt-get install docker -y
-    sudo apt-get update -y
     sudo apt-get install -y docker-compose
 
     printf "\nBaixando imagem do MySQL\n"
@@ -41,7 +40,15 @@ if [ "$ans_db1" = "y" ]; then
     echo '    volumes:' >> docker-compose.yml
     echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 
-    sudo docker-compose up -d
+    service mysql stop
+
+    # Substitui o valor "false" por "true" no arquivo de configuração do MySQL
+    sed -i 's/^.*allowPublicKeyRetrieval.*$/allowPublicKeyRetrieval=true/' /etc/mysql/my.cnf
+
+    # Reinicia o serviço do MySQL para que as alterações sejam aplicadas
+    systemctl restart mysql.service
+    
+    docker-compose up -d
 
 else
     ## Criar um novo banco de dados
