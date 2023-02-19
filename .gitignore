@@ -95,3 +95,7 @@ sql/database
 linux/verification
 linux/distros
 docker/app
+
+# Arquivos específicos
+
+.new_iac_server_advanced.sh
