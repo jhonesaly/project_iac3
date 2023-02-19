@@ -5,7 +5,11 @@ ans_db2="$2" #db name
 ans_db3="$3" #db username
 ans_db4="$4" #db password
 
-# Cria o arquivo docker-compose.yml
+printf "\nInstalando MySql...\n"
+# Instalar o MySQL
+sudo apt-get update
+sudo apt-get install -y mysql-server
+sudo mysql_secure_installation
 
 if [ "$ans_db1" = "y" ]; then
     printf "\nInstalando Docker...\n"
@@ -39,20 +43,14 @@ if [ "$ans_db1" = "y" ]; then
 
     sudo docker-compose up -d
 
-elif [ "$ans_db1" = "n" ]; then
-    printf "\nInstalando MySql...\n"
-    # Instalar o MySQL
-    sudo apt-get update
-    sudo apt-get install -y mysql-server
-    sudo mysql_secure_installation
-
+else
     ## Criar um novo banco de dados
     printf "\nCriando Banco de Dados...\n"
-    
+
     sudo mysql -u root -p -e "CREATE DATABASE $ans_db2;"
 
     ## Criar um novo usuário e conceder todos os privilégios ao banco de dados
-    sudo mysql -u root -p -e "GRANT ALL PRIVILEGES ON $ans_db2.* TO '$ans_db3'@'localhost' IDENTIFIED BY '$ans_db4';"
+    sudo mysql -u root -p -e "GRANT ALL PRIVILEGES ON *.* TO '$ans_db3'@'localhost' IDENTIFIED BY '$ans_db4';"
 
     ## Reiniciar o MySQL para aplicar as alterações
     sudo service mysql restart
