@@ -43,6 +43,7 @@ done
 ##  - Cria banco de dados
 
 if [ $ans_a1 = "y" ]; then
+    printf "\nIniciando módulo de criação de banco de dados...\n"
     ./modules/new_database.sh "$ans_db1" "$ans_db2" "$ans_db3" "$ans_db4"
 fi
 
