@@ -12,7 +12,7 @@ ans_db4="$4" #db password
 
 printf "\nInstalando Docker...\n"
 apt-get install docker.io -y
-sudo apt-get install -y docker-compose
+apt-get install -y docker-compose
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
@@ -35,7 +35,9 @@ echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 
 printf "\nMontando o contêiner MySQL...\n"
 docker-compose up -d
-sleep 10
+sleep 30
+
+apt-get install mysql-client-core-8.0
 
 # Cria tabela no banco de dados
 
@@ -45,7 +47,7 @@ SQL_FILE=/disk2/publica/project_iac3/advanced/modules/dbscript.sql
 ## Obtém o ID do container do MySQL em execução
 MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
 
-docker cp $SQL_FILE $MYSQL_CONTAINER_ID:/dbscript.sql
+printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
-docker exec -it $MYSQL_CONTAINER_ID /bin/bash -c "mysql -u$ans_db3 -p$ans_db4 $ans_db2 < /dbscript.sql"
+docker exec -i $MYSQL_CONTAINER_ID mysql -u root -p$ans_db4 $ans_db2 < /disk2/publica/project_iac3/advanced/modules/dbscript.sql
