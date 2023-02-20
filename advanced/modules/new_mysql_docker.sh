@@ -35,7 +35,7 @@ echo '    volumes:' >> docker-compose.yml
 echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 
 # Substitui o valor "false" por "true" no arquivo de configuração do MySQL
-sed -i 's/^.*allowPublicKeyRetrieval.*$/allowPublicKeyRetrieval=true/' /etc/mysql/my.cnf
+# sed -i 's/^.*allowPublicKeyRetrieval.*$/allowPublicKeyRetrieval=true/' /etc/mysql/my.cnf
 
 # Reinicia o serviço do MySQL para que as alterações sejam aplicadas
 systemctl restart mysql.service
