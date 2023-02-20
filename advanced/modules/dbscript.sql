@@ -1,3 +1,5 @@
+
+
 CREATE TABLE estoque (
     id_codigo_barras VARCHAR(50) NOT NULL,
     nome VARCHAR(50) NOT NULL,
