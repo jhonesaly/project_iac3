@@ -35,7 +35,7 @@ echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 
 printf "\nMontando o contêiner MySQL...\n"
 docker-compose up -d
-sleep 15
+sleep 10
 
 # Cria tabela no banco de dados
 
@@ -47,8 +47,5 @@ MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
 
 docker cp $SQL_FILE $MYSQL_CONTAINER_ID:/dbscript.sql
 
-## Obtém o endereço IP do contêiner MySQL
-MYSQL_IP=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $MYSQL_CONTAINER_ID)
-
 ## Inicia um shell dentro do container do MySQL
-docker exec -it $MYSQL_CONTAINER_ID /bin/bash -c "mysql -h$MYSQL_IP -u$ans_db3 -p$ans_db4 $ans_db2 < /dbscript.sql"
+docker exec -it $MYSQL_CONTAINER_ID /bin/bash -c "mysql -u$ans_db3 -p$ans_db4 $ans_db2 < /dbscript.sql"
