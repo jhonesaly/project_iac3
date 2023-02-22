@@ -54,7 +54,7 @@ if [ $ans_a1 = "y" ]; then
     if [ $ans_db1 = "y" ]; then
         ./modules/new_mysql_docker.sh "$db_name" "$root_name" "$root_pass"
         if [ $ans_db2 = "y" ]; then
-            pip3 install barcode pymysql
+            pip3 install pymysql
             
             ## - Insere produtos aleatórios no banco de dados
             for i in $(seq 1 $n_inserts);
