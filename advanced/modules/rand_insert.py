@@ -19,7 +19,7 @@ def date_rand():
     data_final = date(2023, 12, 31)
     diferenca_dias = (data_final - data_inicial).days
     data = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
-    return data.strftime('%d/%m/%Y')
+    return data.strftime('%Y-%m-%d')
 
 # Argumentos vindos do shell script
 ip_vm = sys.argv[1]
