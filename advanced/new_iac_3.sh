@@ -54,19 +54,18 @@ if [ $ans_a1 = "y" ]; then
     if [ $ans_db1 = "y" ]; then
         ./modules/new_mysql_docker.sh "$db_name" "$root_name" "$root_pass"
         if [ $ans_db2 = "y" ]; then
-            pip install random barcode pymysql
-            for i in $(seq 1 $and_db6);
+            pip3 install barcode pymysql
+            
+            ## - Insere produtos aleatórios no banco de dados
+            for i in $(seq 1 $n_inserts);
             do
-                python ./modules/rand_insert.py "$ip_vm" "$db_name" "$root_pass"
+                python3 ./modules/rand_insert.py "$ip_vm" "$db_name" "$root_pass"
             done
         fi
     else
         ./modules/new_mysql.sh "$db_name" "$root_name" "$root_pass"
     fi
 fi
-
-## - Insere produtos aleatórios no banco de dados
-
 
 ## - Fim
 printf "\nFinalizado.\n"
