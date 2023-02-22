@@ -13,6 +13,13 @@ def name_rand():
         name += random.choice(vogais)
     return name.capitalize()
 
+def date_rand():
+    data_inicial = date(2023, 1, 1)
+    data_final = date(2023, 12, 31)
+    diferenca_dias = (data_final - data_inicial).days
+    data = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
+    return data.strftime('%d/%m/%Y')
+
 
 # configurações do banco de dados
 host = "192.168.0.9"
@@ -37,15 +44,8 @@ marca_rand = name_rand()
 preco_rand = round(random.uniform(0, 100), 2)
 
 ## gerar datas aleatórioas
-data_inicial = date(2023, 1, 1)
-data_final = date(2023, 12, 31)
-diferenca_dias = (data_final - data_inicial).days
-
-data_rand = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
-data_comp_rand = data_rand.strftime('%d/%m/%Y')
-
-data_rand = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
-data_val_rand = data_rand.strftime('%d/%m/%Y')
+data_comp_rand = date_rand()
+data_val_rand = date_rand()
 
 
 # criar e executar a consulta SQL
