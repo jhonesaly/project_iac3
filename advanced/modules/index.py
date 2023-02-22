@@ -3,6 +3,17 @@ import barcode
 import pymysql
 from datetime import date, timedelta
 
+def name_rand():
+    consoantes = "bcdfghjklmnpqrstvwxyz"
+    vogais = "aeiou"
+    num_silabas = random.randint(2, 4)
+    name = ""
+    for i in range(num_silabas):
+        name += random.choice(consoantes)
+        name += random.choice(vogais)
+    return name.capitalize()
+
+
 # configurações do banco de dados
 host = "192.168.0.9"
 user = "root"
@@ -19,13 +30,8 @@ ean = barcode.get_barcode_class('ean13')
 codigo_barras_rand = ean(f'{random.randint(0, 999999999999)}').to_svg()
 
 ## gerar nomes aleatórios
-consoantes = "bcdfghjklmnpqrstvwxyz"
-vogais = "aeiou"
-num_silabas = random.randint(2, 4)
-nome_rand = ""
-for i in range(num_silabas):
-    nome_rand += random.choice(consoantes)
-    nome_rand += random.choice(vogais)
+nome_rand = name_rand()
+marca_rand = name_rand()
 
 ## gerar preço aleatório
 preco_rand = round(random.uniform(0, 100), 2)
@@ -42,12 +48,8 @@ data_rand = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
 data_val_rand = data_rand.strftime('%d/%m/%Y')
 
 
-
-host_name = socket.gethostname()
-
-
 # criar e executar a consulta SQL
-query = f"INSERT INTO dados (id_codigo_barras, nome, Sobrenome, Endereco, Cidade, Host) VALUES ('{cod_barras_rand}', '{nome_rand}', '{nome_rand}', '{nome_rand}', '{nome_rand}', '{host_name}')"
+query = f"INSERT INTO dados (id_codigo_barras, nome, marca, preco, data_compra, data_validade) VALUES ('{cod_barras_rand}', '{nome_rand}', '{marca_rand}', '{preco_rand}', '{data_comp_rand}', '{data_val_rand}')"
 with conn.cursor() as cursor:
     cursor.execute(query)
 
