@@ -1,18 +1,14 @@
 #!/bin/bash
 
-ans_db1="$1" #docker
-ans_db2="$2" #db name
-ans_db3="$3" #db username
-ans_db4="$4" #db password
-
-# ans_db1="y" #docker
-# ans_db2="test1" #db name
-# ans_db3="tester" #db username
-# ans_db4="senha" #db password
+db_name="$1"
+root_name="$2"
+root_pass="$3"
 
 printf "\nInstalando Docker...\n"
-apt-get install docker.io -y
-apt-get install -y docker-compose
+export DEBIAN_FRONTEND=noninteractive
+apt-get install docker.io -y -qq
+apt-get install -y docker-compose -qq
+apt-get install mysql-client-core-8.0 -y -qq
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
@@ -24,10 +20,10 @@ echo '  db:' >> docker-compose.yml
 echo '    image: mysql' >> docker-compose.yml
 echo '    restart: always' >> docker-compose.yml
 echo '    environment:' >> docker-compose.yml
-echo "      MYSQL_ROOT_PASSWORD: $ans_db4" >> docker-compose.yml
-echo "      MYSQL_DATABASE: $ans_db2" >> docker-compose.yml
-echo "      MYSQL_USER: $ans_db3" >> docker-compose.yml
-echo "      MYSQL_PASSWORD: $ans_db4" >> docker-compose.yml
+echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
+echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
+echo "      MYSQL_USER: $root_name" >> docker-compose.yml
+echo "      MYSQL_PASSWORD: $root_pass" >> docker-compose.yml
 echo '    ports:' >> docker-compose.yml
 echo '      - "3306:3306"' >> docker-compose.yml
 echo '    volumes:' >> docker-compose.yml
@@ -36,8 +32,6 @@ echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 printf "\nMontando o contêiner MySQL...\n"
 docker-compose up -d
 sleep 30
-
-apt-get install mysql-client-core-8.0
 
 # Cria tabela no banco de dados
 
@@ -50,4 +44,4 @@ MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
 printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
-docker exec -i $MYSQL_CONTAINER_ID mysql -u root -p$ans_db4 $ans_db2 < /disk2/publica/project_iac3/advanced/modules/dbscript.sql
+docker exec -i $MYSQL_CONTAINER_ID mysql -u root -p$root_pass $db_name < $SQL_FILE

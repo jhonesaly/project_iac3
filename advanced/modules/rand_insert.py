@@ -1,4 +1,5 @@
 import random
+import sys
 import barcode
 import pymysql
 from datetime import date, timedelta
@@ -20,12 +21,15 @@ def date_rand():
     data = data_inicial + timedelta(days=random.randint(0, diferenca_dias))
     return data.strftime('%d/%m/%Y')
 
+ip_vm = sys.argv[1]
+db_name = sys.argv[2]
+root_pass = sys.argv[3]
 
 # configurações do banco de dados
-host = "192.168.0.9"
+host = ip_vm
 user = "root"
-password = "123"
-database = "test1"
+password = root_pass
+database = db_name
 
 # criar conexão
 conn = pymysql.connect(host=host, user=user, password=password, database=database)
