@@ -4,11 +4,12 @@ db_name="$1"
 root_name="$2"
 root_pass="$3"
 
-printf "\nInstalando Docker...\n"
+printf "\nInstalando Arquivos necessários...\n"
 export DEBIAN_FRONTEND=noninteractive
 apt-get install docker.io -y -qq
 apt-get install -y docker-compose -qq
 apt-get install mysql-client-core-8.0 -y -qq
+apt-get install -y python -qq
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
@@ -35,13 +36,10 @@ sleep 30
 
 # Cria tabela no banco de dados
 
-## Define o caminho completo para o arquivo SQL que será executado
-SQL_FILE=/disk2/publica/project_iac3/advanced/modules/dbscript.sql
-
 ## Obtém o ID do container do MySQL em execução
 MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
 
 printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
-docker exec -i $MYSQL_CONTAINER_ID mysql -u root -p$root_pass $db_name < $SQL_FILE
+docker exec -i $MYSQL_CONTAINER_ID mysql -u root -p$root_pass $db_name < /disk2/publica/project_iac3/advanced/modules/dbscript.sql
