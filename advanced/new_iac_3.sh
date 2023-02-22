@@ -29,6 +29,11 @@ while true; do
                 printf "\n...\n"
                 read -p "Digite a senha do administrador do banco de dados: " ans_db4
                 printf "\n...\n"
+                read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_db5
+                printf "\n...\n"
+                    if [ $ans_db5 = "y" ]; then
+                    read -p "Deseja inserir quantos produtos aleatórios? " ans_db6
+                    printf "\n...\n"
             fi
             
             question_number=2
@@ -41,7 +46,6 @@ while true; do
 done
 
 ##  - Cria banco de dados
-
 if [ $ans_a1 = "y" ]; then
     printf "\nIniciando módulo de criação de banco de dados...\n"
     if [ $ans_db1 = "y" ]; then
@@ -49,6 +53,15 @@ if [ $ans_a1 = "y" ]; then
     else
         ./modules/new_mysql.sh "$ans_db1" "$ans_db2" "$ans_db3" "$ans_db4"
     fi
+fi
+
+## - Insere produtos aleatórios no banco de dados
+if [ $ans_db5 = "y" ]; then
+    pip install random barcode pymysql
+    for i in $(seq 1 $and_db6);
+    do
+        python ./modules/gerar_produtos.py 
+    done
 fi
 
 ## - Fim
