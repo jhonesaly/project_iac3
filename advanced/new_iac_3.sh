@@ -34,6 +34,7 @@ while true; do
                     if [ $ans_db2 = "y" ]; then
                     read -p "Deseja inserir quantos produtos aleatórios? " n_inserts
                     printf "\n...\n"
+                    fi
             fi
             
             question_number=2
