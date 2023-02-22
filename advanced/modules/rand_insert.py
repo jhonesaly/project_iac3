@@ -39,7 +39,7 @@ conn = pymysql.connect(host=host, user=user, password=password, database=databas
 # gerar valores aleatórios
 
 ## gerar um código de barras aleatório
-ean = barcode.get_barcode_class('ean13')
+ean = barcode.EAN13
 cod_barras_rand = ean(f'{random.randint(0, 999999999999)}').to_svg()
 
 ## gerar nomes aleatórios
