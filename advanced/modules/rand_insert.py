@@ -1,6 +1,5 @@
 import random
 import sys
-import barcode
 import pymysql
 from datetime import date, timedelta
 
@@ -39,8 +38,7 @@ conn = pymysql.connect(host=host, user=user, password=password, database=databas
 # gerar valores aleatórios
 
 ## gerar um código de barras aleatório
-ean = barcode.EAN13
-cod_barras_rand = ean(f'{random.randint(0, 999999999999)}').to_svg()
+cod_barras_rand = random.randint(0, 999999999999)
 
 ## gerar nomes aleatórios
 nome_rand = name_rand()

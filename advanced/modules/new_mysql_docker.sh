@@ -37,7 +37,11 @@ sleep 30
 
 # Cria tabela no banco de dados
 
+MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
 printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 
+
 ## Inicia um shell dentro do container do MySQL
-docker exec -i $(docker ps --filter "name=advanced_db_1" --format "{{.ID}}") sh -c "exec mysql -u root -p'$root_pass' $db_name < /disk2/publica/project_iac3/advanced/modules/dbscript.sql"
+printf "\nAplicando o script SQL...\n"
+docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /disk2/publica/project_iac3/advanced/modules/dbscript.sql"
+
