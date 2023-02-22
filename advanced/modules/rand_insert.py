@@ -38,7 +38,7 @@ conn = pymysql.connect(host=host, user=user, password=password, database=databas
 # gerar valores aleatórios
 
 ## gerar um código de barras aleatório
-cod_barras_rand = random.randint(0, 999999999999)
+cod_barras_rand = ''.join([str(random.randint(0, 9)) for _ in range(13)])
 
 ## gerar nomes aleatórios
 nome_rand = name_rand()
