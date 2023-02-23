@@ -17,8 +17,8 @@ for lib in need_libraries:
 
 
 # Cria o teste
-def mysql_test():
-    with mysql.connector.connect(user='root', password='123', host='192.168.0.9', database='test1', port=3306) as cnx:
+def mysql_test(user, password, host, database, port):
+    with mysql.connector.connect(user=user, password=password, host=host, database=database, port=port) as cnx:
         cursor = cnx.cursor()
         cursor.execute("SELECT preco FROM estoque WHERE id_codigo_barras = %s", ("3756392598566",))
         result = cursor.fetchone()
@@ -28,8 +28,17 @@ def mysql_test():
         print("Preço do produto: {}".format(price))
         cursor.close()
         cnx.close()
+    return price
+
+# Cria bot de teste
+class MyUser(User):
+    wait_time = between(1, 2)
+
+    @task
+    def mysql_task(self):
+        price = mysql_test('root', '123', '192.168.0.9', 'test1', 3306)
         
-        # Envia o evento
+        # Envia o evento para gráfico do locust
         response_length = len(str(price))
         events.request.fire(
             request_type="MySQL",
@@ -39,14 +48,5 @@ def mysql_test():
             context=None,
             exception=None,
             )
-
-# Cria bot de teste
-class MyUser(User):
-    wait_time = between(1, 2)
-
-    @task
-    def mysql_task(self):
-        mysql_test()
-
 # Para rodar a interface use o comando: > locust -f advanced/tools/direct_locust_loadtest.py --headless -u 30 -r 1 -t 30s --host=192.168.0.9:3306
 # Para acessá-la abra no browser o endereço: http://localhost:8089
