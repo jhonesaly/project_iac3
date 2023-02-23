@@ -7,7 +7,7 @@ import pkgutil
 
 os.system('cls')
 
-need_libraries = ['cryptography', 'mysql-connector-python', 'pymysql']
+need_libraries = ['cryptography', 'pymysql']
 
 for lib in need_libraries:
     if not pkgutil.find_loader(lib):
