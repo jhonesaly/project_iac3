@@ -38,3 +38,5 @@ class MyUser(HttpUser):
                     print("Preço do produto: {}".format(price))
         except Error as e:
             print(e)
+
+# Para abrir a interface use o comando: > locust -f advanced/tools/direct_locust_loadtest.py --host=http://localhost:8080
