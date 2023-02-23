@@ -23,24 +23,22 @@ def mysql_test():
         cursor.execute("SELECT preco FROM estoque WHERE id_codigo_barras = %s", ("3756392598566",))
         result = cursor.fetchone()
         price = result[0]
+        
         # Imprime o preço do produto retornado pelo banco de dados
         print("Preço do produto: {}".format(price))
         cursor.close()
         cnx.close()
-
         
         # Envia o evento
-        events.request_success.fire(request_type="MySQL", name="execute id_codigo_barras", response_time=int(time.time() * 1000), response_length=0)
-
-# Reporta o tempo de resposta
-response_time = (time.time() - start_time) * 1000
-events.request_success.fire(
-    request_type="MySQL",
-    name="execute id_codigo_barras",
-    response_time=response_time,
-    response_length=0,
-)
-
+        response_length = len(str(price))
+        events.request.fire(
+            request_type="MySQL",
+            name="execute id_codigo_barras",
+            response_time=(time.perf_counter() - time.time()) * 1000,
+            response_length=response_length,
+            context=None,
+            exception=None,
+            )
 
 # Cria bot de teste
 class MyUser(User):
@@ -49,8 +47,6 @@ class MyUser(User):
     @task
     def mysql_task(self):
         mysql_test()
-# Define o intervalo entre as medições
-events.init(tick=lambda: 10)
 
-# Para rodar a interface use o comando: > locust -f advanced/tools/direct_locust_loadtest.py --headless -u 10 -r 1 -t 30s --host=192.168.0.9:3306
+# Para rodar a interface use o comando: > locust -f advanced/tools/direct_locust_loadtest.py --headless -u 30 -r 1 -t 30s --host=192.168.0.9:3306
 # Para acessá-la abra no browser o endereço: http://localhost:8089
