@@ -108,7 +108,7 @@ if [ $ans_a1 = "y" ]; then
         cp /modules/nginx.conf /proxy
         cp /modules/dockerfile /proxy
         cd proxy
-        docker build -t proxy-app
+        docker build -t proxy-app .
         docker run --name my-proxy-app -dti -p 4500:4500 proxy-app
         cd ..
     fi  
