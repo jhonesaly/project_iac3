@@ -15,6 +15,6 @@ if [ "$ans_a1" = "y" ]; then
     fi
 
     if [ "$ans_a3" = "y" ]; then
-        apt-get install nfs-server
+        apt-get install nfs-server -y -qq
     fi
 fi

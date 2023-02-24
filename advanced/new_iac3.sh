@@ -40,7 +40,8 @@ while true; do
                     if [ $ans_a3 = "y" ]; then
                     read -p "Deseja adicionar quantos nós ao cluster? " n_nodes
                     printf "\n...\n"
-
+                read -n 1 -p "Deseja criar um proxy? [y/n] " ans_a4
+                printf "\n...\n"
             fi
             
             question_number=2
@@ -95,8 +96,9 @@ if [ $ans_a1 = "y" ]; then
         ## - Cria o cluster
         token=$(docker swarm init --quiet)
         export token=$token
-        mkdir proxy
-        cp 
+        echo "/disk2/publica/project_iac3/advanced *(rw,sync,subtree_check)" | sudo tee -a /etc/exports
+        exportfs -ar
+
     fi  
     
     if [ $ans_a4 = "y" ]; then
@@ -104,9 +106,12 @@ if [ $ans_a1 = "y" ]; then
         ## - Cria o proxy
         mkdir proxy
         cp /modules/nginx.conf /proxy
-        
+        cp /modules/dockerfile /proxy
+        cd proxy
+        docker build -t proxy-app
+        docker run --name my-proxy-app -dti -p 4500:4500 proxy-app
+        cd ..
     fi  
-
 fi
 
 ## - Fim
