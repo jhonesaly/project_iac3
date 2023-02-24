@@ -73,7 +73,7 @@ export n_rand_data=$n_rand_data
 
 if [ $ans_a1 = "y" ]; then
     printf "\nCriando primeiro container...\n"   
-    ./modules/docker_leader.sh
+    ./modules/docker_leader.sh "$db_name" "$root_name" "$root_pass"
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados

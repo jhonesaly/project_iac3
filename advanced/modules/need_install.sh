@@ -18,3 +18,6 @@ if [ "$ans_a1" = "y" ]; then
         apt-get install nfs-server -y -qq
     fi
 fi
+
+systemctl daemon-reexec
+apt-get autoremove -y

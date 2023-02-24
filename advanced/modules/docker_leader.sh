@@ -1,5 +1,10 @@
 #!/bin/bash
 
+db_name="$1" 
+root_name="$2" 
+root_pass="$3"
+
+
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
