@@ -17,13 +17,14 @@ SERVICE_NAME=db
 # Cria o arquivo docker-compose.yml
 echo "version: '3.9'
 services:
-  $SERVICE_NAME:"
+  $SERVICE_NAME:" \
+    > docker-compose.yml
 
 for (( i=1; i<=$n_cont; i++ )); do
     # Define a porta para esse contêiner
     PORT=$((PORT_BASE + i - 1))
 
-    echo "  db:
+    echo "  db_$i:
     image: mysql
     restart: always
     environment:
@@ -34,8 +35,9 @@ for (( i=1; i<=$n_cont; i++ )); do
     ports:
       - \"$PORT:3306\"
     volumes:
-      - ./data$i:/var/lib/mysql"
-done >> docker-compose.yml
+      - ./data$i:/var/lib/mysql" \
+        >> docker-compose.yml
+done
 
 # Cria as pastas para os volumes
 for (( i=1; i<=$n_cont; i++ )); do
