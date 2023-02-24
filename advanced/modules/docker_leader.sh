@@ -1,7 +1,7 @@
 #!/bin/bash
 
-db_name="$1"
-root_name="$2"
+db_name="$1" 
+root_name="$2" 
 root_pass="$3"
 n_cont="$4"
 
@@ -19,7 +19,6 @@ echo "version: '3.9'
 services:
   $SERVICE_NAME:"
 
-# Loop para criar cada contêiner
 for (( i=1; i<=$n_cont; i++ )); do
     # Define a porta para esse contêiner
     PORT=$((PORT_BASE + i - 1))
@@ -35,13 +34,8 @@ for (( i=1; i<=$n_cont; i++ )); do
     ports:
       - \"$PORT:3306\"
     volumes:
-      - ./data$i:/var/lib/mysql
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker"
-done > docker-compose.yml
+      - ./data$i:/var/lib/mysql"
+done >> docker-compose.yml
 
 # Cria as pastas para os volumes
 for (( i=1; i<=$n_cont; i++ )); do
