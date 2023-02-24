@@ -50,5 +50,11 @@ class MyUser(User):
             context=None,
             exception=None,
             )
+        
+# Configuração da interface
+# @events.init.add_listener
+# def on_locust_init(environment, **_kwargs):
+#     environment.runner.stats_writer.set_interval(0.5)
+
 # Para rodar a interface use o comando: > locust -f advanced/tools/direct_locust_loadtest.py -u 30 -r 1 -t 30s --host=192.168.0.9:3306
 # Para acessá-la abra no browser o endereço: http://localhost:8089
