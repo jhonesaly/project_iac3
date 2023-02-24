@@ -12,12 +12,9 @@ if [ "$ans_a1" = "y" ]; then
     if [ "$ans_a2" = "y" ]; then
         apt-get install -y python3 -qq
         apt-get install -y python3-pip -qq
-        
-        pip3 install pymysql
-        pip3 install cryptography
     fi
 
     if [ "$ans_a3" = "y" ]; then
-        apt-get install nfs-commons
+        apt-get install nfs-server
     fi
 fi

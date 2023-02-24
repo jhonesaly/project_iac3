@@ -52,7 +52,7 @@ while true; do
     break
 done
 
-ip_vm=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1)
+ip_lead=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1)
 
 
 # Embalando variáveis de ambiente para usar nos módulos
@@ -61,6 +61,7 @@ export ans_a1=$ans_a1
 export ans_a2=$ans_a2
 export ans_a3=$ans_a3
 
+export ip_lead=$ip_lead
 export db_name=$db_name
 export root_name=$root_name
 export root_pass=$root_pass
@@ -85,15 +86,27 @@ if [ $ans_a1 = "y" ]; then
         printf "\nInserindo produtos aleatórios...\n"
         for i in $(seq 1 $n_rand_data);
         do
-            python3 ./modules/rand_insert.py
+            python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass"
         done
     fi    
 
     if [ $ans_a3 = "y" ]; then
 
         ## - Cria o cluster
+        token=$(docker swarm init --quiet)
+        export token=$token
+        mkdir proxy
+        cp 
+    fi  
+    
+    if [ $ans_a4 = "y" ]; then
+
+        ## - Cria o proxy
+        mkdir proxy
+        cp /modules/nginx.conf /proxy
         
     fi  
+
 fi
 
 ## - Fim

@@ -16,4 +16,3 @@ printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 printf "\nAplicando o script SQL...\n"
 docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
 docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
-

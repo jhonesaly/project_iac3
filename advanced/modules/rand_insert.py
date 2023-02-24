@@ -2,6 +2,16 @@ import random
 import sys
 import pymysql
 from datetime import date, timedelta
+import subprocess
+import pkgutil
+
+
+need_libraries = ['cryptography', 'pymysql']
+
+for lib in need_libraries:
+    if not pkgutil.find_loader(lib):
+        print(f"A biblioteca {lib} não está instalada. Instalando...")
+        subprocess.run(['pip', 'install', lib])
 
 # Funções úteis
 def name_rand():
@@ -22,12 +32,12 @@ def date_rand():
     return data.strftime('%Y-%m-%d')
 
 # Argumentos vindos do shell script
-ip_vm = sys.argv[1]
+ip_lead = sys.argv[1]
 db_name = sys.argv[2]
 root_pass = sys.argv[3]
 
 # configurações do banco de dados
-host = ip_vm
+host = ip_lead
 user = "root"
 password = root_pass
 database = db_name
