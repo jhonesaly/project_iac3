@@ -8,31 +8,30 @@ n_cont="$4"
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
+echo "version: '3.9'
+services:" >> docker-compose.yml
+
 for (( i=1; i<=$n_cont; i++ )); do
     # Define a porta para esse contêiner
     PORT=$((3306 + i - 1))
     # Cria o arquivo docker-compose.yml
-    echo "version: '3.9'
-services:
-    db_$i:
+    echo "    db_$i:
       image: mysql
       restart: always
       environment:
-        MYSQL_ROOT_PASSWORD: ${root_pass}
-        MYSQL_DATABASE: ${db_name}
-        MYSQL_USER: ${root_name}
-        MYSQL_PASSWORD: ${root_pass}
+        MYSQL_ROOT_PASSWORD: $root_pass
+        MYSQL_DATABASE: $db_name
+        MYSQL_USER: $root_name
+        MYSQL_PASSWORD: $root_pass
       ports:
         - \"$PORT:3306\"
       volumes:
-        - ./data:/var/lib/mysql" >> docker-compose-$i.yml
-done 
+        - ./data:/var/lib/mysql" 
+done >> docker-compose.yml
 
 printf "\nMontando os contêiners...\n"
 
-for (( i=1; i<=$n_cont; i++ )); do
-    docker-compose -f docker-compose-$i.yml up -d
-done
+docker-compose up -d
 
 sleep 30
 
