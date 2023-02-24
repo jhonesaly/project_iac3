@@ -23,7 +23,7 @@ for (( i=1; i<=$n_cont; i++ )); do
     # Define a porta para esse contêiner
     PORT=$((PORT_BASE + i - 1))
 
-    echo "  db$i:
+    echo "  db:
     image: mysql
     restart: always
     environment:
@@ -49,7 +49,7 @@ sleep 30
 # Cria tabela no banco de dados
 
 MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
-printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
+printf "\nO ID do primeiro contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
 printf "\nAplicando o script SQL...\n"
