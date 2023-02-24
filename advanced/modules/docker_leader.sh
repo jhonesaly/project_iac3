@@ -8,41 +8,33 @@ n_cont="$4"
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
-# Define a porta base
-PORT_BASE=3306
+# Criar arquivo docker-compose.yml
+echo 'version: "3.9"' > docker-compose.yml
+echo 'services:' >> docker-compose.yml
+echo '  db:' >> docker-compose.yml
+echo '    image: mysql' >> docker-compose.yml
+echo '    restart: always' >> docker-compose.yml
+echo '    environment:' >> docker-compose.yml
+echo "      MYSQL_ROOT_PASSWORD: ${root_pass}" >> docker-compose.yml
+echo "      MYSQL_DATABASE: ${db_name}" >> docker-compose.yml
+echo "      MYSQL_USER: ${root_name}" >> docker-compose.yml
+echo "      MYSQL_PASSWORD: ${root_pass}" >> docker-compose.yml
+echo '    ports:' >> docker-compose.yml
 
-# Define o nome do serviço
-SERVICE_NAME=db
-
-# Cria o arquivo docker-compose.yml
-echo "version: '3.9'
-services:
-  $SERVICE_NAME:" \
-    > docker-compose.yml
-
-for (( i=1; i<=$n_cont; i++ )); do
-    # Define a porta para esse contêiner
-    PORT=$((PORT_BASE + i - 1))
-
-    echo "  db_$i:
-    image: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${root_pass}
-      MYSQL_DATABASE: ${db_name}
-      MYSQL_USER: ${root_name}
-      MYSQL_PASSWORD: ${root_pass}
-    ports:
-      - \"$PORT:3306\"
-    volumes:
-      - ./data$i:/var/lib/mysql" \
-        >> docker-compose.yml
+# Adicionar portas dinâmicas
+for (( i=1; i<=$n_cont; i++ ))
+do
+  echo "      - '${((i-1)*3306+3306)}:3306'" >> docker-compose.yml
 done
 
-# Cria as pastas para os volumes
-for (( i=1; i<=$n_cont; i++ )); do
-  mkdir -p ./data$i
-done
+echo '    volumes:' >> docker-compose.yml
+echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
+echo '    deploy:' >> docker-compose.yml
+echo "      replicas: ${n_cont}" >> docker-compose.yml
+echo '      placement:' >> docker-compose.yml
+echo '        constraints:' >> docker-compose.yml
+echo '          - node.role == worker' >> docker-compose.yml
+
 
 printf "\nMontando o contêiner MySQL...\n"
 docker-compose up -d
