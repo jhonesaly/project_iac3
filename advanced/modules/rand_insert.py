@@ -1,10 +1,8 @@
 import random
 import sys
-import pymysql
 from datetime import date, timedelta
 import subprocess
 import pkgutil
-
 
 need_libraries = ['cryptography', 'pymysql']
 
@@ -12,6 +10,9 @@ for lib in need_libraries:
     if not pkgutil.find_loader(lib):
         print(f"A biblioteca {lib} não está instalada. Instalando...")
         subprocess.run(['pip', 'install', lib])
+
+import pymysql
+import cryptography
 
 # Funções úteis
 def name_rand():

@@ -13,25 +13,24 @@ for (( i=1; i<=$n_cont; i++ )); do
     PORT=$((3306 + i - 1))
     # Cria o arquivo docker-compose.yml
     echo "version: '3.9'
-    services:
-      db:
-        image: mysql
-        restart: always
-        environment:
+services:
+    db_$i:
+      image: mysql
+      restart: always
+      environment:
         MYSQL_ROOT_PASSWORD: ${root_pass}
         MYSQL_DATABASE: ${db_name}
         MYSQL_USER: ${root_name}
         MYSQL_PASSWORD: ${root_pass}
-        ports:
+      ports:
         - \"$PORT:3306\"
-        volumes:
-        - ./data:/var/lib/mysql"
-done >> docker-compose-$i.yml
+      volumes:
+        - ./data:/var/lib/mysql" >> docker-compose-$i.yml
+done 
 
-printf "\nMontando o contêiner MySQL...\n"
+printf "\nMontando os contêiners...\n"
 
 for (( i=1; i<=$n_cont; i++ )); do
-    # Define a porta para esse contêiner
     docker-compose -f docker-compose-$i.yml up -d
 done
 
@@ -39,8 +38,8 @@ sleep 30
 
 # Cria tabela no banco de dados
 
-MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1" --format "{{.ID}}")
-printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
+MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1_1" --format "{{.ID}}")
+printf "\nO ID do primeiro contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
 printf "\nAplicando o script SQL...\n"
