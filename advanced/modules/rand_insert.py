@@ -65,7 +65,8 @@ for i in range(n_rand_data):
     data_comp_rand = date_rand()
     data_val_rand = date_rand()
 
-
+    print(f'cod_barras para teste: ({cod_barras_rand}) e resultado esperado: ({preco_rand})')
+    
     # criar e executar a SQL query
     query = f"INSERT INTO estoque (id_codigo_barras, nome, marca, preco, data_compra, data_validade) VALUES ('{cod_barras_rand}', '{nome_rand}', '{marca_rand}', '{preco_rand}', '{data_comp_rand}', '{data_val_rand}')"
     with conn.cursor() as cursor:
