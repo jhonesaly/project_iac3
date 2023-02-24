@@ -12,7 +12,7 @@ while true; do
     ## 1 - Configurações
 
     if [ $question_number -eq 1 ]; then
-        read -n 1 -p "Deseja criar contêiner de banco de dados? [y/n] " ans_a1
+        read -n 1 -p "Deseja criar um banco de dados via contêiner? [y/n] " ans_a1
         printf "\n...\n"
         
         if [ "$ans_a1" != "y" ] && [ "$ans_a1" != "n" ]; then
@@ -37,9 +37,6 @@ while true; do
                     fi
                 read -n 1 -p "Deseja criar um cluster? [y/n] " ans_a3
                 printf "\n...\n"
-                    if [ $ans_a3 = "y" ]; then
-                    read -p "Deseja adicionar quantos nós ao cluster? " n_nodes
-                    printf "\n...\n"
                 read -n 1 -p "Deseja criar um proxy? [y/n] " ans_a4
                 printf "\n...\n"
             fi
@@ -66,29 +63,22 @@ export ip_lead=$ip_lead
 export db_name=$db_name
 export root_name=$root_name
 export root_pass=$root_pass
-export n_cont = $n_cont
+export n_cont=$n_cont
 
 export n_rand_data=$n_rand_data
-
-export n_nodes=$n_nodes
 
 ##  - Cria banco de dados
 
 ./modules/need_install.sh
 
 if [ $ans_a1 = "y" ]; then
-    printf "\nCriando primeiro container...\n"
-    
+    printf "\nCriando primeiro container...\n"   
     ./modules/docker_leader.sh
     
     if [ $ans_a2 = "y" ]; then
-        
         ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
-        for i in $(seq 1 $n_rand_data);
-        do
-            python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass"
-        done
+        python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass" "$n_rand_data"
     fi    
 
     if [ $ans_a3 = "y" ]; then
