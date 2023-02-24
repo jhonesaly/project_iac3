@@ -1,7 +1,7 @@
 #!/bin/bash
 
-db_name="$1" 
-root_name="$2" 
+db_name="$1"
+root_name="$2"
 root_pass="$3"
 n_cont="$4"
 
@@ -11,9 +11,6 @@ docker pull mysql
 # Define a porta base
 PORT_BASE=3306
 
-# Define o nome da imagem a ser usada
-IMAGE_NAME=mysql
-
 # Define o nome do serviço
 SERVICE_NAME=db
 
@@ -22,37 +19,32 @@ echo "version: '3.9'
 services:
   $SERVICE_NAME:"
 
+# Loop para criar cada contêiner
 for (( i=1; i<=$n_cont; i++ )); do
     # Define a porta para esse contêiner
     PORT=$((PORT_BASE + i - 1))
 
-    echo "version: \"3.9\"
-    services:"
-
-    for ((i=1; i<=$n_cont; i++)); do
-        port=$((3305+$i))
-        echo "  db$i:
-        image: mysql
-        restart: always
-        environment:
-        MYSQL_ROOT_PASSWORD: ${root_pass}
-        MYSQL_DATABASE: ${db_name}
-        MYSQL_USER: ${root_name}
-        MYSQL_PASSWORD: ${root_pass}
-        ports:
-        - \"$port:3306\"
-        volumes:
-        - ./data:/var/lib/mysql
-        deploy:
-        replicas: 1
-        placement:
-            constraints:
-            - node.role == worker"
+    echo "  db$i:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${root_pass}
+      MYSQL_DATABASE: ${db_name}
+      MYSQL_USER: ${root_name}
+      MYSQL_PASSWORD: ${root_pass}
+    ports:
+      - \"$PORT:3306\"
+    volumes:
+      - ./data$i:/var/lib/mysql
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker"
 done > docker-compose.yml
 
 # Cria as pastas para os volumes
-for (( i=1; i<=$n_cont; i++ ))
-do
+for (( i=1; i<=$n_cont; i++ )); do
   mkdir -p ./data$i
 done
 
