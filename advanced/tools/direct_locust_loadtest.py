@@ -19,7 +19,7 @@ for lib in need_libraries:
 # Cria o teste
 def mysql_test(user, password, host, database, port):
     with mysql.connector.connect(user=user, password=password, host=host, database=database, port=port) as cnx:
-        time_init = time.time()
+        time_init = time.perf_counter()
         cursor = cnx.cursor()
         cursor.execute("SELECT preco FROM estoque WHERE id_codigo_barras = %s", ("3756392598566",))
         result = cursor.fetchone()
