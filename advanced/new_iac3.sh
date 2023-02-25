@@ -85,6 +85,7 @@ if [ $ans_a1 = "y" ]; then
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
+        pip3 install pymysql
         python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$db_pass" "$n_rand_data"
     fi    
 
