@@ -28,7 +28,7 @@ while true; do
                 root_name='tester'
                 root_pass='Y9ZtEr'
                 n_cont='2'
-                ans_a2='n'
+                ans_a2='y'
                 n_rand_data='1'
                 ans_a3='n'
                 ans_a4='n'
@@ -72,31 +72,20 @@ ip_lead=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f
 
 # Embalando variáveis de ambiente para usar nos módulos
 
-export ans_a1=$ans_a1
-export ans_a2=$ans_a2
-export ans_a3=$ans_a3
-
-export ip_lead=$ip_lead
-export db_name=$db_name
-export db_pass=$db_pass
-export root_name=$root_name
-export root_pass=$root_pass
-export n_cont=$n_cont
-
-export n_rand_data=$n_rand_data
-
 ##  - Cria banco de dados
 
-./modules/need_install.sh
-
 if [ $ans_a1 = "y" ]; then
+
+    printf "\nIntalando arquivos necessárrios...\n"
+    ./modules/need_install.sh
+
     printf "\nIniciando módulo docker...\n"   
-    ./modules/docker_leader.sh "$db_name" "$db_pass" "$root_name" "$root_pass" "$n_cont"
+    ./modules/create_container.sh "$db_name" "$db_pass" "$root_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
-        python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass" "$n_rand_data"
+        python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$db_pass" "$n_rand_data"
     fi    
 
     if [ $ans_a3 = "y" ]; then
