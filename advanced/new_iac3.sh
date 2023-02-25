@@ -20,27 +20,41 @@ while true; do
             continue
 
         else
-            if [ "$ans_a1" = "y" ]; then
-                read -p "Digite o nome do banco de dados: " db_name
-                printf "\n...\n"
-                read -p "Digite o nome do administrador do banco de dados: " root_name
-                printf "\n...\n"
-                read -p "Digite a senha do administrador do banco de dados: " root_pass
-                printf "\n...\n"
-                read -p "Deseja criar quantas réplicas do contêiner? " n_cont
-                printf "\n...\n"
-                read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
-                printf "\n...\n"
-                    if [ $ans_a2 = "y" ]; then
-                    read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
+            read -n 1 -p "Deseja usar respostas 'default' para realizar tester? [y/n] " ans_at
+            printf "\n...\n"
+            if [ "$ans_at" = "y" ]; then
+                db_name='test1'
+                root_name='root'
+                root_pass='123'
+                n_cont='2'
+                ans_a2='n'
+                n_rand_data='1'
+                ans_a3='n'
+                ans_a4='n'
+
+            else
+                if [ "$ans_a1" = "y" ]; then
+                    read -p "Digite o nome do banco de dados: " db_name
                     printf "\n...\n"
-                    fi
-                read -n 1 -p "Deseja criar um cluster? [y/n] " ans_a3
-                printf "\n...\n"
-                read -n 1 -p "Deseja criar um proxy? [y/n] " ans_a4
-                printf "\n...\n"
+                    read -p "Digite o nome do administrador do banco de dados: " root_name
+                    printf "\n...\n"
+                    read -p "Digite a senha do administrador do banco de dados: " root_pass
+                    printf "\n...\n"
+                    read -p "Deseja criar quantas réplicas do contêiner? " n_cont
+                    printf "\n...\n"
+                    read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
+                    printf "\n...\n"
+                        if [ $ans_a2 = "y" ]; then
+                        read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
+                        printf "\n...\n"
+                        fi
+                    read -n 1 -p "Deseja criar um cluster? [y/n] " ans_a3
+                    printf "\n...\n"
+                    read -n 1 -p "Deseja criar um proxy? [y/n] " ans_a4
+                    printf "\n...\n"
+                fi
             fi
-            
+
             question_number=2
             continue
         fi
@@ -72,7 +86,7 @@ export n_rand_data=$n_rand_data
 ./modules/need_install.sh
 
 if [ $ans_a1 = "y" ]; then
-    printf "\nCriando primeiro container...\n"   
+    printf "\nIniciando módulo docker...\n"   
     ./modules/docker_leader.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then

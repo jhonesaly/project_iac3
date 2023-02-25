@@ -8,36 +8,37 @@ n_cont="$4"
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
+printf "\nInicializando o cluster Docker Swarm...\n"
+docker swarm init
+
 echo "version: '3.9'
-services:" >> docker-compose.yml
+services:
+  db:
+    image: mysql
+    deploy:
+      replicas: $n_cont
+    environment:
+      MYSQL_ROOT_PASSWORD: $root_pass
+      MYSQL_DATABASE: $db_name
+      MYSQL_USER: $root_name
+      MYSQL_PASSWORD: $root_pass
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'data:/var/lib/mysql'
+    restart_policy:
+      condition: on-failure
+volumes:
+  mysql-data:" >> docker-compose.yml
 
-for (( i=1; i<=$n_cont; i++ )); do
-    # Define a porta para esse contêiner
-    PORT=$((3306 + i - 1))
-    # Cria o arquivo docker-compose.yml
-    echo "    db_$i:
-      image: mysql
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: $root_pass
-        MYSQL_DATABASE: $db_name
-        MYSQL_USER: $root_name
-        MYSQL_PASSWORD: $root_pass
-      ports:
-        - \"$PORT:3306\"
-      volumes:
-        - ./data:/var/lib/mysql" 
-done >> docker-compose.yml
 
-printf "\nMontando os contêiners...\n"
+printf "\nCriando serviço do MySQL...\n"
+docker stack deploy -c docker-compose.yml mysql
 
-docker-compose up -d
-
-sleep 30
+sleep 60
 
 # Cria tabela no banco de dados
-
-MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_db_1_1" --format "{{.ID}}")
+MYSQL_CONTAINER_ID=$(docker ps --filter "name=mysql_db." --format "{{.ID}}")
 printf "\nO ID do primeiro contêiner é : $MYSQL_CONTAINER_ID\n"
 
 ## Inicia um shell dentro do container do MySQL
