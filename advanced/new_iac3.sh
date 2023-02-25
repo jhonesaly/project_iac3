@@ -24,8 +24,8 @@ while true; do
             printf "\n...\n"
             if [ "$ans_at" = "y" ]; then
                 db_name='test1'
-                root_name='root'
-                root_pass='123'
+                root_name='tester'
+                root_pass='Y9ZtEr'
                 n_cont='2'
                 ans_a2='n'
                 n_rand_data='1'

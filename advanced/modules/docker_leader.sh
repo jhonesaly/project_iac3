@@ -1,7 +1,7 @@
 #!/bin/bash
 
-db_name="$1" 
-root_name="$2" 
+db_name="$1"
+root_name="$2"
 root_pass="$3"
 n_cont="$4"
 
@@ -11,7 +11,7 @@ docker pull mysql
 printf "\nInicializando o cluster Docker Swarm...\n"
 docker swarm init
 
-echo "version: '3.9'
+echo "version: '3.0'
 services:
   db:
     image: mysql
@@ -25,11 +25,14 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - 'data:/var/lib/mysql'
-    restart_policy:
-      condition: on-failure
+      - 'mysql-data:/var/lib/mysql'
 volumes:
-  mysql-data:" >> docker-compose.yml
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /disk2/publica/project_iac3/advanced/data
+      o: bind" >> docker-compose.yml
 
 
 printf "\nCriando serviço do MySQL...\n"
