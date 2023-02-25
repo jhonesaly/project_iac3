@@ -12,31 +12,22 @@ docker pull mysql
 printf "\nInicializando o cluster Docker Swarm...\n"
 docker swarm init
 
-mkdir mysql-data
-
-echo "version: '3.0'
-services:
-  db:
-    image: mysql
-    deploy:
-      replicas: $n_cont
-    environment:
-      MYSQL_DATABASE: $db_name
-      MYSQL_PASSWORD: $db_pass
-      MYSQL_USER: $root_name
-      MYSQL_ROOT_PASSWORD: $root_pass
-    ports:
-      - '3306:3306'
-    volumes:
-      - 'mysql-data:/var/lib/mysql'
-volumes:
-  mysql-data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /disk2/publica/project_iac3/advanced/data
-      o: bind" >> docker-compose.yml
-
+echo 'version: "3.0"' > docker-compose.yml
+echo 'services:' >> docker-compose.yml
+echo '  db:' >> docker-compose.yml
+echo '    image: mysql' >> docker-compose.yml
+echo '    deploy:' >> docker-compose.yml
+echo "      replicas: $n_cont" >> docker-compose.yml
+echo '    restart: always' >> docker-compose.yml
+echo '    environment:' >> docker-compose.yml
+echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
+echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
+echo "      MYSQL_USER: $root_name" >> docker-compose.yml
+echo "      MYSQL_PASSWORD: $db_pass" >> docker-compose.yml
+echo '    ports:' >> docker-compose.yml
+echo '      - "3306:3306"' >> docker-compose.yml
+echo '    volumes:' >> docker-compose.yml
+echo '      - ./data:/var/lib/mysql' >> docker-compose.yml
 
 printf "\nCriando serviço do MySQL...\n"
 docker stack deploy -c docker-compose.yml mysql
