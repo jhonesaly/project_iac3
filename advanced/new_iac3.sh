@@ -24,6 +24,7 @@ while true; do
             printf "\n...\n"
             if [ "$ans_at" = "y" ]; then
                 db_name='test1'
+                db_pass='Y6ZtEr'
                 root_name='tester'
                 root_pass='Y9ZtEr'
                 n_cont='2'
@@ -35,6 +36,8 @@ while true; do
             else
                 if [ "$ans_a1" = "y" ]; then
                     read -p "Digite o nome do banco de dados: " db_name
+                    printf "\n...\n"
+                    read -p "Digite a senha do banco de dados: " db_pass
                     printf "\n...\n"
                     read -p "Digite o nome do administrador do banco de dados: " root_name
                     printf "\n...\n"
@@ -75,6 +78,7 @@ export ans_a3=$ans_a3
 
 export ip_lead=$ip_lead
 export db_name=$db_name
+export db_pass=$db_pass
 export root_name=$root_name
 export root_pass=$root_pass
 export n_cont=$n_cont
@@ -87,7 +91,7 @@ export n_rand_data=$n_rand_data
 
 if [ $ans_a1 = "y" ]; then
     printf "\nIniciando módulo docker...\n"   
-    ./modules/docker_leader.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
+    ./modules/docker_leader.sh "$db_name" "$db_pass" "$root_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados

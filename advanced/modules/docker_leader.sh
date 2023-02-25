@@ -1,15 +1,18 @@
 #!/bin/bash
 
 db_name="$1"
-root_name="$2"
-root_pass="$3"
-n_cont="$4"
+db_pass="$2"
+root_name="$3"
+root_pass="$4"
+n_cont="$5"
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
 printf "\nInicializando o cluster Docker Swarm...\n"
 docker swarm init
+
+mkdir mysql-data
 
 echo "version: '3.0'
 services:
@@ -18,10 +21,10 @@ services:
     deploy:
       replicas: $n_cont
     environment:
-      MYSQL_ROOT_PASSWORD: $root_pass
       MYSQL_DATABASE: $db_name
+      MYSQL_PASSWORD: $db_pass
       MYSQL_USER: $root_name
-      MYSQL_PASSWORD: $root_pass
+      MYSQL_ROOT_PASSWORD: $root_pass
     ports:
       - '3306:3306'
     volumes:
