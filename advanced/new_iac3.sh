@@ -12,7 +12,7 @@ while true; do
     ## 1 - Configurações
 
     if [ $question_number -eq 1 ]; then
-        read -n 1 -p "Deseja criar um banco de dados via contêiner? [y/n] " ans_a1
+        read -n 1 -p "Deseja criar um banco de dados mysql master? [y/n] " ans_a1
         printf "\n...\n"
         
         if [ "$ans_a1" != "y" ] && [ "$ans_a1" != "n" ]; then
@@ -20,7 +20,7 @@ while true; do
             continue
 
         else
-            read -n 1 -p "Deseja usar respostas 'default' para realizar tester? [y/n] " ans_at
+            read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
             printf "\n...\n"
             if [ "$ans_at" = "y" ]; then
                 db_name='testdb'
@@ -58,9 +58,31 @@ while true; do
             question_number=2
             continue
         fi
-    fi
-    
+
     printf "\nConfigurando...\n"
+    fi
+
+    
+    
+    if [ $question_number -eq 2 ]; then
+        read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
+        printf "\n...\n"
+        
+        if [ "$ans_b1" != "y" ] && [ "$ans_b1" != "n" ]; then
+            printf "\nDigite um comando válido.\n"
+            continue
+        
+        else
+            read -p "Deseja criar quantos contêineres na máquina? " n_cont
+            printf "\n...\n"
+
+            question_number=3
+            continue
+        fi
+
+    printf "\nConfigurando...\n"
+    fi
+
     break
 done
 
@@ -71,7 +93,7 @@ ip_lead=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f
 
 ##  - Cria banco de dados
 
-if [ $ans_a1 = "y" ]; then
+if [ $ans_a1 = "y" ]; then ## - Cria mysql master
 
     printf "\nIntalando arquivos necessárrios...\n"
     ./modules/need_install.sh
@@ -79,14 +101,13 @@ if [ $ans_a1 = "y" ]; then
     printf "\nIniciando módulo docker...\n"   
     ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
     
-    if [ $ans_a2 = "y" ]; then
-        ## - Insere produtos aleatórios no banco de dados
+    if [ $ans_a2 = "y" ]; then ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
         pip3 install pymysql
         python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass" "$n_rand_data"
     fi    
 
-    if [ $ans_a3 = "y" ]; then
+    if [ $ans_a3 = "y" ]; then 
 
         ## - Cria o cluster
         token=$(docker swarm init --quiet)
@@ -107,6 +128,10 @@ if [ $ans_a1 = "y" ]; then
         docker run --name my-proxy-app -dti -p 4500:4500 proxy-app
         cd ..
     fi  
+fi
+
+if [ $ans_b1 = "y" ]; then ## - Cria mysql worker
+    ./modules/create_worker.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
 fi
 
 ## - Fim

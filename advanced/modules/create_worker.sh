@@ -1,9 +1,10 @@
 #!/bin/bash
 
-printf "\nConfigurando... MySQL\n"
+printf "\nConfigurando...\n"
 db_name="$1"
-root_pass="$2"
-n_cont="$3"
+root_name="$2"
+root_pass="$3"
+n_cont="$4"
 
 image=mysql
 image_port=3306
@@ -14,7 +15,7 @@ network_name=mysql_network
 # Script para sincronizar esse volume via NFS
 
 printf "\nIniciando o cluster...\n"
-docker swarm init
+docker swarm 
 
 printf "\nCriando containers do MySQL...\n"
 # docker service create --name mysql_worker --replicas 2 --network mysql_network --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=mysql_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest

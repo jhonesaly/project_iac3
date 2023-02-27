@@ -38,7 +38,7 @@ database = db_name
 # criar conexão
 conn = pymysql.connect(host=host, user=user, password=password, database=database)
 
-for i in range(n_rand_data):
+for i in range(int(n_rand_data)):
 
     # gerar valores aleatórios
 

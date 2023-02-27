@@ -49,5 +49,8 @@ docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTA
 docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
 
 printf "\nCriando serviço e rede do MySQL...\n"
-docker network create --driver overlay --scope global $network_name
 docker swarm init
+
+docker swarm join-token worker | tail -n +2 > worker_token.sh
+
+docker network create --driver overlay --scope global $network_name
