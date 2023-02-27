@@ -12,6 +12,7 @@ apt-get install -y python3 -qq
 apt-get install -y python3-pip -qq
 apt-get install nfs-server -y -qq
 apt-get install -y nfs-kernel-server -y -qq
+
 systemctl daemon-reexec
 apt-get autoremove -y
 
@@ -70,5 +71,6 @@ systemctl restart nfs-kernel-server
 
 printf "\nCriando proxy...\n"
 cd proxy
+cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
 docker build -t proxy-app .
 docker run --name mysql-proxy -dti -p 4500:4500 proxy-app

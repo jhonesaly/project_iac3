@@ -42,5 +42,11 @@ docker service create --name $service_name \
 
 sleep 30
 
+master_ip=$(<master_ip.sh)
+mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data /var/lib/docker/volumes/advanced_mysql_volume/_data
 
-mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data /var/lib/docker/volumes/advanced_mysql_volume/_data
+
+# Get IP address of worker machine
+worker_ip=$(hostname -I | awk '{print $1}')
+# Use sed to replace the commented line in nginx.conf with the worker IP
+sed -i "/upstream all/a\  server $worker_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf

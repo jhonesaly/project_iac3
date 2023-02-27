@@ -89,6 +89,7 @@ if [ $ans_a1 = "y" ]; then ## - Cria mysql master
     docker swarm join-token worker | tail -n +2 > worker_token.sh
     ip_master=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1) 
     ip_master> master_ip.sh
+    mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
     
     if [ $ans_a2 = "y" ]; then ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
