@@ -9,42 +9,45 @@ n_cont="$5"
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
+printf "\nCriando serviço do MySQL...\n"
+
 docker volume create dbdata
+
+# Script para sincronizar esse volume via NFS
 
 docker swarm init
 
+printf "\nCriando serviço do MySQL...\n"
+
 docker service create /
 /--name mysqldb /
-/-e MYSQL_ROOT_PASSWORD: $root_pass/
 /-e MYSQL_DATABASE: $db_name/
-/-e MYSQL_USER: $root_name/
 /-e MYSQL_PASSWORD: $db_pass/
+/-e MYSQL_ROOT_PASSWORD: $root_pass/
+/-e MYSQL_USER: $root_name/
+/--restart: always/
+/-u root/
 /--mount type=volume,src=dbdata,dst=/var/lib/mysql/
 /--replicas $n_cont /
 /-p 3306:3306 mysql
 
-echo 'version: "3.0"' > docker-compose.yml
-echo 'services:' >> docker-compose.yml
-echo '  db:' >> docker-compose.yml
-echo '    image: mysql' >> docker-compose.yml
-echo '    restart: always' >> docker-compose.yml
-echo '    environment:' >> docker-compose.yml
-echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
-echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
-echo "      MYSQL_USER: $root_name" >> docker-compose.yml
-echo "      MYSQL_PASSWORD: $db_pass" >> docker-compose.yml
-echo '    ports:' >> docker-compose.yml
-echo '      - "3306:3306"' >> docker-compose.yml
-echo '    volumes:' >> docker-compose.yml
-echo '      - ./dbdata:/var/lib/mysql' >> docker-compose.yml
-
-printf "\nCriando serviço do MySQL...\n"
-docker-compose up -d
+# echo 'version: "3.0"' > docker-compose.yml
+# echo 'services:' >> docker-compose.yml
+# echo '  db:' >> docker-compose.yml
+# echo '    image: mysql' >> docker-compose.yml
+# echo '    restart: always' >> docker-compose.yml
+# echo '    environment:' >> docker-compose.yml
+# echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
+# echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
+# echo "      MYSQL_USER: $root_name" >> docker-compose.yml
+# echo "      MYSQL_PASSWORD: $db_pass" >> docker-compose.yml
+# echo '    ports:' >> docker-compose.yml
+# echo '      - "3306:3306"' >> docker-compose.yml
+# echo '    volumes:' >> docker-compose.yml
+# echo '      - ./dbdata:/var/lib/mysql' >> docker-compose.yml
 
 
-
-
-
+# docker-compose up -d
 
 sleep 30
 
