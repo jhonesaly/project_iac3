@@ -23,10 +23,8 @@ while true; do
             read -n 1 -p "Deseja usar respostas 'default' para realizar tester? [y/n] " ans_at
             printf "\n...\n"
             if [ "$ans_at" = "y" ]; then
-                db_name='test1'
-                db_pass='Y6ZtEr'
-                root_name='tester'
-                root_pass='Y9ZtEr'
+                db_name='testdb'
+                root_pass='123'
                 n_cont='2'
                 ans_a2='y'
                 n_rand_data='1'
@@ -76,7 +74,8 @@ if [ $ans_a1 = "y" ]; then
     ./modules/need_install.sh
 
     printf "\nIniciando módulo docker...\n"   
-    ./modules/create_container.sh "$db_name" "$root_pass" "$n_cont"
+    ./modules/create_master.sh "$db_name" "$root_pass"
+    ./modules/create_worker.sh "$db_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados
