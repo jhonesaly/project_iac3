@@ -6,14 +6,23 @@ root_name="$3"
 root_pass="$4"
 n_cont="$5"
 
+image=mysql
+
+service_name=${image}_service
+service_volume=${image}_volume
+service_port=3306
+
+network_name=${image}_network
+
+
 printf "\nBaixando imagem do MySQL\n"
-docker pull mysql
+
+docker pull $image
 
 printf "\nCriando serviço do MySQL...\n"
 
-service_volume=dbdata
-
 docker volume create $service_volume
+docker network create $network_name
 
 # Script para sincronizar esse volume via NFS
 
@@ -24,7 +33,7 @@ docker swarm init
 printf "\nCriando serviço do MySQL...\n"
 
 # docker service create --name mysqldb --replicas 2 --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=dbdata,dst=/var/lib/mysql -p 3306:3306 mysql:latest
-docker service create --name mysqldb --replicas $n_cont --env MYSQL_DATABASE=$db_name --env MYSQL_PASSWORD=$db_pass --env MYSQL_ROOT_PASSWORD=$root_pass --env MYSQL_USER=$root_name --mount type=volume,src=$service_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest
+docker service create --name $service_name --replicas $n_cont --env MYSQL_DATABASE=$db_name --env MYSQL_PASSWORD=$db_pass --env MYSQL_ROOT_PASSWORD=$root_pass --env MYSQL_USER=$root_name --mount type=volume,src=$service_volume,dst=/var/lib/mysql -p $service_port:$service_port mysql:latest
 
 # echo 'version: "3.0"' > docker-compose.yml
 # echo 'services:' >> docker-compose.yml
