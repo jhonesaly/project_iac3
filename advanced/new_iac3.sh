@@ -37,10 +37,6 @@ while true; do
                 if [ "$ans_a1" = "y" ]; then
                     read -p "Digite o nome do banco de dados: " db_name
                     printf "\n...\n"
-                    read -p "Digite a senha do banco de dados: " db_pass
-                    printf "\n...\n"
-                    read -p "Digite o nome do administrador do banco de dados: " root_name
-                    printf "\n...\n"
                     read -p "Digite a senha do administrador do banco de dados: " root_pass
                     printf "\n...\n"
                     read -p "Deseja criar quantas réplicas do contêiner? " n_cont
@@ -80,13 +76,13 @@ if [ $ans_a1 = "y" ]; then
     ./modules/need_install.sh
 
     printf "\nIniciando módulo docker...\n"   
-    ./modules/create_container.sh "$db_name" "$db_pass" "$root_name" "$root_pass" "$n_cont"
+    ./modules/create_container.sh "$db_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados
         printf "\nInserindo produtos aleatórios...\n"
         pip3 install pymysql
-        python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$db_pass" "$n_rand_data"
+        python3 ./modules/rand_insert.py "$ip_lead" "$db_name" "$root_pass" "$n_rand_data"
     fi    
 
     if [ $ans_a3 = "y" ]; then

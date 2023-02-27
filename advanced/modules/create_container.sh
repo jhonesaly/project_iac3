@@ -2,10 +2,8 @@
 
 printf "\nConfigurando... MySQL\n"
 db_name="$1"
-db_pass="$2"
-root_name="$3"
-root_pass="$4"
-n_cont="$5"
+root_pass="$2"
+n_cont="$3"
 
 image=mysql
 image_port=3306
@@ -61,5 +59,4 @@ printf "\nAplicando o script SQL...\n"
 
 # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
 cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql /var/lib/docker/volumes/dbdata/_data
-
 docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$db_pass' $db_name < /dbscript.sql"
