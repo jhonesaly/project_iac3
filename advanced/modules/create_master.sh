@@ -36,7 +36,7 @@ echo "      - '$image_port:$image_port'" >> docker-compose.yml
 echo "    volumes:" >> docker-compose.yml
 echo "      - $volume_name:/var/lib/mysql" >> docker-compose.yml
 echo "volumes:" >> docker-compose.yml
-echo "  - $volume_name:"
+echo "  $volume_name:" >> docker-compose.yml
 
 printf "\nMontando o contêiner MySQL...\n"
 docker-compose up -d
