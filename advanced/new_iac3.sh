@@ -77,8 +77,7 @@ if [ $ans_a1 = "y" ]; then
     ./modules/need_install.sh
 
     printf "\nIniciando módulo docker...\n"   
-    ./modules/create_master.sh "$db_name" "$root_pass" "$root_name"
-    ./modules/create_worker.sh "$db_name" "$root_pass" "$n_cont"
+    ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
     
     if [ $ans_a2 = "y" ]; then
         ## - Insere produtos aleatórios no banco de dados

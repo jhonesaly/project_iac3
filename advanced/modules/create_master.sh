@@ -2,23 +2,17 @@
 
 printf "\nConfigurando... MySQL\n"
 db_name="$1"
-root_pass="$2"
-root_name="$3"
+root_name="$2"
+root_pass="$3"
 
 image=mysql
 image_port=3306
+volume_name=mysql_volume
 service_name=mysql_master
 network_name=mysql_network
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull $image
-
-printf "\nCriando serviço e rede do MySQL...\n"
-docker network create --driver overlay --scope global $network_name
-docker swarm init
-
-printf "\nBaixando imagem do MySQL\n"
-docker pull mysql
 
 printf "\nCriando contêiner mestre MySQL...\n"
 
@@ -51,5 +45,9 @@ printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
 printf "\nAplicando o script SQL...\n"
 
 # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
-cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql /var/lib/docker/volumes/dbdata/_data
+docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
 docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
+
+printf "\nCriando serviço e rede do MySQL...\n"
+docker network create --driver overlay --scope global $network_name
+docker swarm init
