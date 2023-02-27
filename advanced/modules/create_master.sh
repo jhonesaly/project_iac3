@@ -3,18 +3,17 @@
 printf "\nConfigurando... MySQL\n"
 db_name="$1"
 root_pass="$2"
+root_name="$3"
 
 image=mysql
 image_port=3306
 service_name=mysql_master
-volume_name=mysql_volume
 network_name=mysql_network
 
 printf "\nBaixando imagem do MySQL\n"
 docker pull $image
 
 printf "\nCriando serviço e rede do MySQL...\n"
-docker volume create $volume_name
 docker network create --driver overlay --scope global $network_name
 docker swarm init
 
@@ -31,6 +30,8 @@ echo "    restart: always" >> docker-compose.yml
 echo "    environment:" >> docker-compose.yml
 echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
 echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
+echo "      MYSQL_USER: $root_name" >> docker-compose.yml
+echo "      MYSQL_PASSWORD: $root_pass" >> docker-compose.yml
 echo "    ports:" >> docker-compose.yml
 echo "      - '$image_port:$image_port'" >> docker-compose.yml
 echo "    volumes:" >> docker-compose.yml

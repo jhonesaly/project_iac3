@@ -25,6 +25,7 @@ while true; do
             if [ "$ans_at" = "y" ]; then
                 db_name='testdb'
                 root_pass='123'
+                root_name='tester'
                 n_cont='2'
                 ans_a2='y'
                 n_rand_data='1'
@@ -36,6 +37,8 @@ while true; do
                     read -p "Digite o nome do banco de dados: " db_name
                     printf "\n...\n"
                     read -p "Digite a senha do administrador do banco de dados: " root_pass
+                    printf "\n...\n"
+                    read -p "Digite o nome do administrador do banco de dados: " root_name
                     printf "\n...\n"
                     read -p "Deseja criar quantas réplicas do contêiner? " n_cont
                     printf "\n...\n"
@@ -74,7 +77,7 @@ if [ $ans_a1 = "y" ]; then
     ./modules/need_install.sh
 
     printf "\nIniciando módulo docker...\n"   
-    ./modules/create_master.sh "$db_name" "$root_pass"
+    ./modules/create_master.sh "$db_name" "$root_pass" "$root_name"
     ./modules/create_worker.sh "$db_name" "$root_pass" "$n_cont"
     
     if [ $ans_a2 = "y" ]; then

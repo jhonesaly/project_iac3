@@ -32,7 +32,7 @@ n_rand_data = sys.argv[4]
 # configurações do banco de dados
 host = ip_lead
 user = "root"
-password = db_pass
+password = root_pass
 database = db_name
 
 # criar conexão
