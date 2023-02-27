@@ -9,6 +9,20 @@ n_cont="$5"
 printf "\nBaixando imagem do MySQL\n"
 docker pull mysql
 
+docker volume create dbdata
+
+docker swarm init
+
+docker service create /
+/--name mysqldb /
+/-e MYSQL_ROOT_PASSWORD: $root_pass/
+/-e MYSQL_DATABASE: $db_name/
+/-e MYSQL_USER: $root_name/
+/-e MYSQL_PASSWORD: $db_pass/
+/--mount type=volume,src=dbdata,dst=/var/lib/mysql/
+/--replicas $n_cont /
+/-p 3306:3306 mysql
+
 echo 'version: "3.0"' > docker-compose.yml
 echo 'services:' >> docker-compose.yml
 echo '  db:' >> docker-compose.yml
@@ -26,6 +40,11 @@ echo '      - ./dbdata:/var/lib/mysql' >> docker-compose.yml
 
 printf "\nCriando serviço do MySQL...\n"
 docker-compose up -d
+
+
+
+
+
 
 sleep 30
 
