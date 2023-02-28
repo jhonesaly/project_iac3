@@ -1,9 +1,12 @@
 #!/bin/bash
 
+GREEN='\033[0;32m'
+NC='\033[0m'
+
 ## 0 - Saudação
 
-    printf "\nIniciando protocolo new_iac_3...\n"
-    printf "\nEm caso de dúvida, consulte a documentação disponível em <https://github.com/jhonesaly/project_iac3>\n"
+    printf "\n${GREEN}Iniciando protocolo new_iac_3...${NC}\n"
+    printf "\n${GREEN}Em caso de dúvida, consulte a documentação disponível em <https://github.com/jhonesaly/project_iac3>${NC}\n"
 
 ## 1 - Adicionando configurações
 
@@ -11,14 +14,12 @@
 
     while true; do
 
-        ## 1 - Configurações
-
         if [ $question_number -eq 1 ]; then
-            read -n 1 -p "Deseja criar um banco de dados mysql master? [y/n] " ans_a1
+            read -n 1 -p "${GREEN}Deseja criar um banco de dados mysql master? [y/n] ${NC}" ans_a1
             printf "\n...\n"
                     
             if [ "$ans_a1" = "y" ]; then
-                read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
+                read -n 1 -p "${GREEN}Deseja usar respostas 'default' para realizar testes? [y/n] ${NC}" ans_at
                 printf "\n...\n"
                 if [ "$ans_at" = "y" ]; then
                     db_name='testdb'
@@ -32,16 +33,16 @@
                     continue
                 
                 elif [ "$ans_at" = "n" ]; then
-                    read -p "Digite o nome do banco de dados: " db_name
+                    read -p "${GREEN}Digite o nome do banco de dados: ${NC}" db_name
                     printf "\n...\n"
-                    read -p "Digite a senha do administrador do banco de dados: " root_pass
+                    read -p "${GREEN}Digite a senha do administrador do banco de dados: ${NC}" root_pass
                     printf "\n...\n"
-                    read -p "Digite o nome do administrador do banco de dados: " root_name
+                    read -p "${GREEN}Digite o nome do administrador do banco de dados: ${NC}" root_name
                     printf "\n...\n"
-                    read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
+                    read -n 1 -p "${GREEN}Deseja criar produtos aleatórios no banco para testes? [y/n] ${NC}" ans_a2
                     printf "\n...\n"
                         if [ $ans_a2 = "y" ]; then
-                        read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
+                        read -p "${GREEN}Deseja inserir quantos produtos aleatórios? ${NC}" n_rand_data
                         printf "\n...\n"
                         fi
 
@@ -49,7 +50,7 @@
                     continue
 
                 else
-                    printf "\nDigite um comando válido.\n"
+                    printf "\n${GREEN}Digite um comando válido.${NC}\n"
                     continue
                 fi
             
@@ -58,19 +59,19 @@
                 continue
 
             else
-                printf "\nDigite um comando válido.\n"
+                printf "\n${GREEN}Digite um comando válido.${NC}\n"
                 continue
             fi
 
-        printf "\nConfigurando...\n"
+        printf "\n${GREEN}Configurando...${NC}\n"
         fi
         
         if [ $question_number -eq 2 ] && [ "$ans_a1" = "n" ]; then
-            read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
+            read -n 1 -p "${GREEN}Deseja criar um banco de dados mysql worker? [y/n] ${NC}" ans_b1
             printf "\n...\n"
             
             if [ "$ans_b1" = "y" ]; then
-                read -p "Deseja criar quantos contêineres na máquina? " n_cont
+                read -p "${GREEN}Deseja criar quantos contêineres na máquina? ${NC}" n_cont
                 printf "\n...\n"
                 
                 question_number=3
@@ -81,11 +82,11 @@
                 continue
 
             else
-                printf "\nDigite um comando válido.\n"
+                printf "\n${GREEN}Digite um comando válido.${NC}\n"
                 continue
             fi
 
-        printf "\nConfigurando...\n"
+        printf "\n${GREEN}Configurando...${NC}\n"
         fi
 
         break
@@ -93,25 +94,25 @@
 
 ## 2 - Executando módulos
 
-    if [ $ans_a1 = "y" ]; then ## - Cria mysql master
+    if [ "$ans_a1" = "y" ]; then ## - Cria mysql master
 
-        printf "\nIniciando criação do mysql master...\n"   
+        printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
         ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
         mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
         
-        if [ $ans_a2 = "y" ]; then ## - Insere produtos aleatórios no banco de dados
-            printf "\nInserindo produtos aleatórios...\n"
+        if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
+            printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
             pip3 install pymysql
             python3 ./modules/rand_insert.py "$ip_master" "$db_name" "$root_pass" "$n_rand_data"
         fi    
     
     fi
 
-    if [ $ans_b1 = "y" ]; then ## - Cria mysql worker
-        printf "\nIniciando criação do mysql worker...\n"
+    if [ "$ans_b1" = "y" ]; then ## - Cria mysql worker
+        printf "\n${GREEN}Iniciando criação do mysql worker...${NC}\n"
         ./modules/create_worker.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
     fi
 
 ## 3 - Fim
 
-    printf "\nFinalizado.\n"
+    printf "\n${GREEN}Finalizado.${NC}\n"

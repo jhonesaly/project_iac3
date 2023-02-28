@@ -1,6 +1,9 @@
 #!/bin/bash
 
-printf "\nConfigurando mysql worker...\n"
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+printf "\n${GREEN}Configurando mysql worker...${NC}\n"
 
     source master_vars.conf
 
@@ -12,7 +15,7 @@ printf "\nConfigurando mysql worker...\n"
     service_name=mysql_worker
     network_name=advanced_default
 
-printf "\nInstalando pacotes...\n"
+printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
     export DEBIAN_FRONTEND=noninteractive
 
@@ -23,15 +26,15 @@ printf "\nInstalando pacotes...\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
-printf "\nAdicionando nó ao cluster...\n" # Necessário já ter um mysql master
+printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
 
     docker swarm join --token $worker_token
 
-printf "\nAdicionando pasta compartilhada com o master via NFS...\n"
+printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n"
 
     mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data /var/lib/docker/volumes/advanced_mysql_volume/_data
 
-printf "\nCriando serviço de containers do mysql worker...\n"
+printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
     # docker service create --name mysql_worker --replicas 2 --network mysql_network --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=mysql_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest
     docker service create --name $service_name \
     --replicas $n_cont \
@@ -45,7 +48,7 @@ printf "\nCriando serviço de containers do mysql worker...\n"
 
     sleep 30
 
-printf "\nAdicionando ip do worker ao proxy...\n"
+printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
     # Get IP address of worker machine
     worker_ip=$(hostname -I | awk '{print $1}')
     # Use sed to replace the commented line in nginx.conf with the worker IP
