@@ -26,7 +26,7 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     apt-get autoremove -y
 
     docker pull mysql
-    docker pull httpd
+    docker pull python
     docker pull nginx
 
 printf "\n${GREEN}Criando volumes, rede e cluster...${NC}\n"
@@ -53,13 +53,12 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
     echo "      - db:/var/lib/mysql" >> docker-compose.yml
     echo "    networks:" >> docker-compose.yml
     echo "      - cluster_network" >> docker-compose.yml
-    echo "  apache_web_server:" >> docker-compose.yml
-    echo "    image: httpd" >> docker-compose.yml
+    echo "  python_app:" >> docker-compose.yml
+    echo "    image: python" >> docker-compose.yml
     echo "    restart: always" >> docker-compose.yml
     echo "    deploy:" >> docker-compose.yml
     echo "      replicas: 3" >> docker-compose.yml
     echo "    volumes:" >> docker-compose.yml
-    echo "      - type: volume" >> docker-compose.yml
     echo "      - app" >> docker-compose.yml
     echo "    networks:" >> docker-compose.yml
     echo "      - cluster_network" >> docker-compose.yml
