@@ -29,8 +29,6 @@ while true; do
                 n_cont='2'
                 ans_a2='y'
                 n_rand_data='1'
-                ans_a3='n'
-                ans_a4='n'
 
             else
                 if [ "$ans_a1" = "y" ]; then
@@ -55,8 +53,6 @@ while true; do
 
     printf "\nConfigurando...\n"
     fi
-
-    
     
     if [ $question_number -eq 2 ]; then
         read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
