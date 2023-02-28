@@ -57,9 +57,16 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
     echo "    image: python" >> docker-compose.yml
     echo "    restart: always" >> docker-compose.yml
     echo "    deploy:" >> docker-compose.yml
-    echo "      replicas: 3" >> docker-compose.yml
+    echo "      replicas: 1" >> docker-compose.yml
     echo "    volumes:" >> docker-compose.yml
     echo "      - app" >> docker-compose.yml
+    echo "    networks:" >> docker-compose.yml
+    echo "      - cluster_network" >> docker-compose.yml
+    echo "  nginx_proxy:" >> docker-compose.yml
+    echo "    image: nginx" >> docker-compose.yml
+    echo "    restart: always" >> docker-compose.yml
+    echo "    deploy:" >> docker-compose.yml
+    echo "      replicas: 1" >> docker-compose.yml
     echo "    networks:" >> docker-compose.yml
     echo "      - cluster_network" >> docker-compose.yml
     echo "volumes:" >> docker-compose.yml
@@ -73,7 +80,7 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
-    MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_mysql_master_1" --format "{{.ID}}")
+    MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_mysql_db_1" --format "{{.ID}}")
     printf "\nO ID do mysql_master contêiner é : $MYSQL_CONTAINER_ID\n"
     # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
