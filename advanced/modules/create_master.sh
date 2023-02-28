@@ -69,6 +69,7 @@ printf "\n${GREEN}Criando cluster e rede do mysql...${NC}\n"
     docker swarm init
     docker network create --driver overlay --scope global $network_name
     worker_token=$(docker swarm join-token worker -q)
+    manager_token=$(docker swarm join-token manager -q)
 
 printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
@@ -78,15 +79,11 @@ printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
 
-    cd modules/proxy || return
-    cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
-    master_ip=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1)      
-    # Use sed to replace the commented line in nginx.conf with the worker IP
-    sed -i "/upstream all/a\        server $master_ip" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    master_ip=$(hostname -I | awk '{print $1}')      
+    sed -i "/upstream all/a\        server $master_ip" modules/proxy/nginx.conf
+    cp modules/proxy/nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
     docker build -t nginx_configured .
     docker run --name nginx_proxy -dti -p 4500:4500 nginx_configured
-    cd ..
-    cd ..
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
@@ -95,3 +92,4 @@ printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
     echo "root_pass=${root_pass}" >> master_vars.conf
     echo "master_ip=${master_ip}" >> master_vars.conf
     echo "worker_token=${worker_token}" >> master_vars.conf
+    echo "manager_token=${manager_token}" >> master_vars.conf
