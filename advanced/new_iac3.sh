@@ -7,7 +7,7 @@ NC='\033[0m'
 ## 0 - Saudação
 
     printf "\n${GREEN}Iniciando protocolo new_iac_3...${NC}\n"
-    printf "\n${GREEN}Em caso de dúvida, consulte a documentação disponível em <https://github.com/jhonesaly/project_iac3>${NC}\n"
+    printf "\n${GREEN}Em caso de dúvida, consulte a documentação disponível em <https://github.com/jhonesaly/project_iac3>${NC}\n\n"
 
 ## 1 - Adicionando configurações
 

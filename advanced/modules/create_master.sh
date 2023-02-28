@@ -31,7 +31,8 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
-    docker pull $image
+    docker pull mysql
+    docker pull nginx
 
 printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 
@@ -58,7 +59,7 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
     MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_mysql_master_1" --format "{{.ID}}")
-    printf "\nO ID do Contêiner é : $MYSQL_CONTAINER_ID\n"
+    printf "\nO ID do mysql_master contêiner é : $MYSQL_CONTAINER_ID\n"
     # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
@@ -67,6 +68,7 @@ printf "\n${GREEN}Criando cluster e rede do mysql...${NC}\n"
 
     docker swarm init
     docker network create --driver overlay --scope global $network_name
+    worker_token=$(docker swarm join-token worker -q)
 
 printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
@@ -76,15 +78,15 @@ printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
 
-    cd proxy || return
+    cd modules/proxy || return
     cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
-    docker build -t proxy-app .
-    docker run --name nginx_proxy -dti -p 4500:4500 proxy-app
+    master_ip=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1)      
+    # Use sed to replace the commented line in nginx.conf with the worker IP
+    sed -i "/upstream all/a\  server $master_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    docker build -t nginx_configured .
+    docker run --name nginx_proxy -dti -p 4500:4500 nginx_configured
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
-
-    master_ip=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1) 
-    worker_token=$(docker swarm join-token worker -q)
 
     echo "db_name=${db_name}" > master_vars.conf
     echo "root_name=${root_name}" >> master_vars.conf
