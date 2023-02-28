@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
 NC='\033[0m'
 
 ## 0 - Saudação
@@ -15,11 +16,11 @@ NC='\033[0m'
     while true; do
 
         if [ $question_number -eq 1 ]; then
-            read -n 1 -p "${GREEN}Deseja criar um banco de dados mysql master? [y/n] ${NC}" ans_a1
+            read -n 1 -p "Deseja criar um banco de dados mysql master? [y/n] " ans_a1
             printf "\n...\n"
                     
             if [ "$ans_a1" = "y" ]; then
-                read -n 1 -p "${GREEN}Deseja usar respostas 'default' para realizar testes? [y/n] ${NC}" ans_at
+                read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
                 printf "\n...\n"
                 if [ "$ans_at" = "y" ]; then
                     db_name='testdb'
@@ -33,16 +34,16 @@ NC='\033[0m'
                     continue
                 
                 elif [ "$ans_at" = "n" ]; then
-                    read -p "${GREEN}Digite o nome do banco de dados: ${NC}" db_name
+                    read -p "Digite o nome do banco de dados: " db_name
                     printf "\n...\n"
-                    read -p "${GREEN}Digite a senha do administrador do banco de dados: ${NC}" root_pass
+                    read -p "Digite a senha do administrador do banco de dados: " root_pass
                     printf "\n...\n"
-                    read -p "${GREEN}Digite o nome do administrador do banco de dados: ${NC}" root_name
+                    read -p "Digite o nome do administrador do banco de dados: " root_name
                     printf "\n...\n"
-                    read -n 1 -p "${GREEN}Deseja criar produtos aleatórios no banco para testes? [y/n] ${NC}" ans_a2
+                    read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
                     printf "\n...\n"
                         if [ $ans_a2 = "y" ]; then
-                        read -p "${GREEN}Deseja inserir quantos produtos aleatórios? ${NC}" n_rand_data
+                        read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
                         printf "\n...\n"
                         fi
 
@@ -67,11 +68,11 @@ NC='\033[0m'
         fi
         
         if [ $question_number -eq 2 ] && [ "$ans_a1" = "n" ]; then
-            read -n 1 -p "${GREEN}Deseja criar um banco de dados mysql worker? [y/n] ${NC}" ans_b1
+            read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
             printf "\n...\n"
             
             if [ "$ans_b1" = "y" ]; then
-                read -p "${GREEN}Deseja criar quantos contêineres na máquina? ${NC}" n_cont
+                read -p "Deseja criar quantos contêineres na máquina? " n_cont
                 printf "\n...\n"
                 
                 question_number=3

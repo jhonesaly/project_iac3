@@ -53,7 +53,7 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
     echo "  $volume_name:" >> docker-compose.yml
 
     docker-compose up -d
-    sleep 30
+    sleep 60
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 

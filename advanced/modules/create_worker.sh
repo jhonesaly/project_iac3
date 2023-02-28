@@ -46,7 +46,7 @@ printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
     --mount type=volume,src=$volume_name,dst=/var/lib/mysql \
     -p $image_port:$image_port $image:latest
 
-    sleep 30
+    sleep 60
 
 printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
     # Get IP address of worker machine
