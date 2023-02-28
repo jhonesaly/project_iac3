@@ -99,7 +99,6 @@ NC='\033[0m'
 
         printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
         ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
-        mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
         
         if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
             printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
