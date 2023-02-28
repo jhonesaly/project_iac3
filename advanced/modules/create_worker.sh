@@ -1,32 +1,31 @@
 #!/bin/bash
 
-printf "\nInstalando Pacotes...\n"
+printf "\nInstalando pacotes...\n"
 
-export DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_FRONTEND=noninteractive
 
-apt-get update
-apt-get install docker.io -y -qq
-apt-get install mysql-client-core-8.0 -y -qq
-apt-get install nfs-common -y -qq
-systemctl daemon-reexec
-apt-get autoremove -y
+    apt-get update
+    apt-get install docker.io -y -qq
+    apt-get install mysql-client-core-8.0 -y -qq
+    apt-get install nfs-common -y -qq
+    systemctl daemon-reexec
+    apt-get autoremove -y
 
-printf "\nConfigurando...\n"
-db_name="$1"
-root_name="$2"
-root_pass="$3"
-n_cont="$4"
+printf "\nConfigurando mysql worker...\n"
 
-image=mysql
-image_port=3306
-volume_name=advanced_mysql_volume
-service_name=mysql_worker
-network_name=advanced_default
+    source master_vars.conf
 
-# Script para sincronizar esse volume via NFS
+    # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token
+    
+    image=mysql
+    image_port=3306
+    volume_name=advanced_mysql_volume
+    service_name=mysql_worker
+    network_name=advanced_default
 
 printf "\nAdicionando nó ao cluster...\n" # Necessário já ter um mysql master
-./worker_token.sh
+
+    docker swarm join --token $worker_token
 
 printf "\nCriando containers do mysql worker...\n"
 # docker service create --name mysql_worker --replicas 2 --network mysql_network --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=mysql_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest
