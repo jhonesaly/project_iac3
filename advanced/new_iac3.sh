@@ -7,6 +7,8 @@ printf "\nEm caso de dúvida, consulte a documentação disponível em <https://
 
 question_number=1
 
+## 1 - Adicionando configurações
+
 while true; do
 
     ## 1 - Configurações
@@ -54,7 +56,7 @@ while true; do
         elif [ "$ans_a1" = "n" ]; then
             question_number=2
             continue
-            
+
         else
             printf "\nDigite um comando válido.\n"
             continue
@@ -63,7 +65,7 @@ while true; do
     printf "\nConfigurando...\n"
     fi
     
-    if [ $question_number -eq 2 ]; then
+    if [ $question_number -eq 2 ] && [ "$ans_a1" = "n" ]; then
         read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
         printf "\n...\n"
         
@@ -89,15 +91,13 @@ while true; do
     break
 done
 
-##  - Cria banco de dados
+## 2 - Executando módulos
 
 if [ $ans_a1 = "y" ]; then ## - Cria mysql master
 
-    printf "\nIniciando módulo create_master...\n"   
+    printf "\nIniciando criação do mysql master...\n"   
     ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
     docker swarm join-token worker | tail -n +2 > worker_token.sh
-    ip_master=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1) 
-    ip_master> master_ip.sh
     mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
     
     if [ $ans_a2 = "y" ]; then ## - Insere produtos aleatórios no banco de dados
@@ -109,9 +109,10 @@ if [ $ans_a1 = "y" ]; then ## - Cria mysql master
 fi
 
 if [ $ans_b1 = "y" ]; then ## - Cria mysql worker
-    printf "\nIniciando módulo create_worker...\n"
+    printf "\nIniciando criação do mysql worker...\n"
     ./modules/create_worker.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
 fi
 
-## - Fim
+## 3 - Fim
+
 printf "\nFinalizado.\n"

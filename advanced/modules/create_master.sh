@@ -64,7 +64,7 @@ printf "\nCriando rede do mysql...\n" # Cria cluster usando docker swarm
 docker swarm init
 docker network create --driver overlay --scope global $network_name
 
-printf "\nCompatilhando via NFS...\n" # Compartilha conteúdo dentro do volume
+printf "\nCompartilhando via NFS...\n" # Compartilha conteúdo dentro do volume
 echo "/var/lib/docker/volumes/advanced_mysql_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
 exportfs -ar
 systemctl restart nfs-kernel-server
@@ -74,3 +74,13 @@ cd proxy || return
 cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
 docker build -t proxy-app .
 docker run --name mysql-proxy -dti -p 4500:4500 proxy-app
+
+# Criando arquivo de configuração do worker
+master_ip=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1) 
+
+
+echo "db_name=${db_name}" > master_vars.conf
+echo "root_name=${root_name}" >> master_vars.conf
+echo "root_pass=${root_pass}" >> master_vars.conf
+echo "master_ip=${master_ip}" >> master_vars.conf
+echo "docker_swarm_token=${docker_swarm_token}" >> master_vars.conf
