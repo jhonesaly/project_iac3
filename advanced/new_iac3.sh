@@ -1,7 +1,6 @@
 #!/bin/bash
 
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
 NC='\033[0m'
 
 ## 0 - Saudação
@@ -95,15 +94,18 @@ NC='\033[0m'
 
 ## 2 - Executando módulos
 
+
+
     if [ "$ans_a1" = "y" ]; then ## - Cria mysql master
 
         printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
         ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
-        
+
         if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
             printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
             pip3 install pymysql
-            python3 ./modules/rand_insert.py "$ip_master" "$db_name" "$root_pass" "$n_rand_data"
+            master_ip=$(hostname -I | awk '{print $1}')
+            python3 ./modules/rand_insert.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
         fi    
     
     fi

@@ -24,13 +24,13 @@ def date_rand():
 
 
 # Argumentos vindos do shell script
-ip_lead = sys.argv[1]
+master_ip = sys.argv[1]
 db_name = sys.argv[2]
 root_pass = sys.argv[3]
 n_rand_data = sys.argv[4]
 
 # configurações do banco de dados
-host = ip_lead
+host = master_ip
 user = "root"
 password = root_pass
 database = db_name

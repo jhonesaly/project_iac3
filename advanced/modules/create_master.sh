@@ -83,12 +83,13 @@ printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
     MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_mysql_db_1" --format "{{.ID}}")
     printf "\nO ID do mysql_master contêiner é : $MYSQL_CONTAINER_ID\n"
     # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
-    docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
+    docker cp modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
 
 printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
-    echo "/var/lib/docker/volumes/advanced_mysql_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
+    cp modules/rand_insert.py /var/lib/docker/volumes/advanced_app/_data
+    echo "/var/lib/docker/volumes/advanced_app/_data *(rw,sync,subtree_check)" >> /etc/exports
     exportfs -ar
     systemctl restart nfs-kernel-server
 
@@ -113,4 +114,4 @@ printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
 printf "\n${GREEN}Montando pasta compartilhada por NFS na pasta atual...${NC}\n"
 
-    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
+    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_app/_data shared
