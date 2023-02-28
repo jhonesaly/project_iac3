@@ -1,5 +1,17 @@
 #!/bin/bash
 
+printf "\nConfigurando mysql worker...\n"
+
+    source master_vars.conf
+
+    # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token
+
+    image=mysql
+    image_port=3306
+    volume_name=advanced_mysql_volume
+    service_name=mysql_worker
+    network_name=advanced_default
+
 printf "\nInstalando pacotes...\n"
 
     export DEBIAN_FRONTEND=noninteractive
@@ -11,41 +23,30 @@ printf "\nInstalando pacotes...\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
-printf "\nConfigurando mysql worker...\n"
-
-    source master_vars.conf
-
-    # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token
-    
-    image=mysql
-    image_port=3306
-    volume_name=advanced_mysql_volume
-    service_name=mysql_worker
-    network_name=advanced_default
-
 printf "\nAdicionando nó ao cluster...\n" # Necessário já ter um mysql master
 
     docker swarm join --token $worker_token
 
-printf "\nCriando containers do mysql worker...\n"
-# docker service create --name mysql_worker --replicas 2 --network mysql_network --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=mysql_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest
-docker service create --name $service_name \
---replicas $n_cont \
---network $network_name \
---env MYSQL_DATABASE=$db_name \
---env MYSQL_PASSWORD=$root_pass \
---env MYSQL_ROOT_PASSWORD=$root_pass \
---env MYSQL_USER=$root_name \
---mount type=volume,src=$volume_name,dst=/var/lib/mysql \
--p $image_port:$image_port $image:latest
+printf "\nAdicionando pasta compartilhada com o master via NFS...\n"
 
-sleep 30
+    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data /var/lib/docker/volumes/advanced_mysql_volume/_data
 
-master_ip=$(<master_ip.sh)
-mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data /var/lib/docker/volumes/advanced_mysql_volume/_data
+printf "\nCriando serviço de containers do mysql worker...\n"
+    # docker service create --name mysql_worker --replicas 2 --network mysql_network --env MYSQL_DATABASE=test1 --env MYSQL_PASSWORD=123 --env MYSQL_ROOT_PASSWORD=123 --env MYSQL_USER=tester --mount type=volume,src=mysql_volume,dst=/var/lib/mysql -p 3306:3306 mysql:latest
+    docker service create --name $service_name \
+    --replicas $n_cont \
+    --network $network_name \
+    --env MYSQL_DATABASE=$db_name \
+    --env MYSQL_PASSWORD=$root_pass \
+    --env MYSQL_ROOT_PASSWORD=$root_pass \
+    --env MYSQL_USER=$root_name \
+    --mount type=volume,src=$volume_name,dst=/var/lib/mysql \
+    -p $image_port:$image_port $image:latest
 
+    sleep 30
 
-# Get IP address of worker machine
-worker_ip=$(hostname -I | awk '{print $1}')
-# Use sed to replace the commented line in nginx.conf with the worker IP
-sed -i "/upstream all/a\  server $worker_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+printf "\nAdicionando ip do worker ao proxy...\n"
+    # Get IP address of worker machine
+    worker_ip=$(hostname -I | awk '{print $1}')
+    # Use sed to replace the commented line in nginx.conf with the worker IP
+    sed -i "/upstream all/a\  server $worker_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf

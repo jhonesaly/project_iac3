@@ -1,5 +1,17 @@
 #!/bin/bash
 
+printf "\nConfigurando mysql master...\n"
+
+    db_name="$1"
+    root_name="$2"
+    root_pass="$3"
+
+    image=mysql
+    image_port=3306
+    volume_name=mysql_volume
+    service_name=mysql_master
+    network_name=mysql_network
+
 printf "\nInstalando pacotes...\n"
 
     export DEBIAN_FRONTEND=noninteractive
@@ -16,22 +28,9 @@ printf "\nInstalando pacotes...\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
-printf "\nConfigurando mysql master...\n"
+    docker pull $image
 
-    db_name="$1"
-    root_name="$2"
-    root_pass="$3"
-
-    image=mysql
-    image_port=3306
-    volume_name=mysql_volume
-    service_name=mysql_master
-    network_name=mysql_network
-
-printf "\nBaixando imagem do MySQL...\n"
-docker pull $image
-
-printf "\nCriando docker-compose do mysql mestre...\n"
+printf "\nCriando container do mysql mestre...\n"
 
     echo "version: '3.9'" > docker-compose.yml
     echo "services:" >> docker-compose.yml
@@ -50,9 +49,8 @@ printf "\nCriando docker-compose do mysql mestre...\n"
     echo "volumes:" >> docker-compose.yml
     echo "  $volume_name:" >> docker-compose.yml
 
-printf "\nMontando o contêiner do mysql mestre...\n"
-docker-compose up -d
-sleep 30
+    docker-compose up -d
+    sleep 30
 
 printf "\nAplicando o script SQL ao banco de dados...\n"
 
@@ -78,7 +76,7 @@ printf "\nCriando proxy...\n"
     cd proxy || return
     cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
     docker build -t proxy-app .
-    docker run --name mysql-proxy -dti -p 4500:4500 proxy-app
+    docker run --name nginx_proxy -dti -p 4500:4500 proxy-app
 
 printf "\nCriando arquivo de configuração do worker...\n"
 
