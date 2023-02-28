@@ -82,7 +82,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
     cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
     master_ip=$(ip addr show | grep -E "inet .*brd" | awk '{print $2}' | cut -d '/' -f1 | head -n1)      
     # Use sed to replace the commented line in nginx.conf with the worker IP
-    sed -i "/upstream all/a\  server $master_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    sed -i "/upstream all/a\        server $master_ip" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
     docker build -t nginx_configured .
     docker run --name nginx_proxy -dti -p 4500:4500 nginx_configured
 

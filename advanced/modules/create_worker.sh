@@ -49,7 +49,5 @@ printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
     sleep 60
 
 printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
-    # Get IP address of worker machine
     worker_ip=$(hostname -I | awk '{print $1}')
-    # Use sed to replace the commented line in nginx.conf with the worker IP
-    sed -i "/upstream all/a\  server $worker_ip\n" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    sed -i "/upstream all/a\        server $worker_ip" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
