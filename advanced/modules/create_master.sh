@@ -78,11 +78,13 @@ printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
     systemctl restart nfs-kernel-server
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
-
+    cd modules/proxy || return
     master_ip=$(hostname -I | awk '{print $1}')      
-    sed -i "/upstream all/a\        server $master_ip" modules/proxy/nginx.conf
-    cp modules/proxy/nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
+    sed -i "/upstream all/a\        server $master_ip" nginx.conf
+    cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
     docker build -t nginx_configured .
+    cd ..
+    cd ..
     docker run --name nginx_proxy -dti -p 4500:4500 nginx_configured
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
