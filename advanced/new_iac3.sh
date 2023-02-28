@@ -14,12 +14,8 @@ while true; do
     if [ $question_number -eq 1 ]; then
         read -n 1 -p "Deseja criar um banco de dados mysql master? [y/n] " ans_a1
         printf "\n...\n"
-        
-        if [ "$ans_a1" != "y" ] && [ "$ans_a1" != "n" ]; then
-            printf "\nDigite um comando válido.\n"
-            continue
-
-        else
+                
+        if [ "$ans_a1" = "y" ]; then
             read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
             printf "\n...\n"
             if [ "$ans_at" = "y" ]; then
@@ -30,24 +26,37 @@ while true; do
                 ans_a2='y'
                 n_rand_data='1'
 
-            else
-                if [ "$ans_a1" = "y" ]; then
-                    read -p "Digite o nome do banco de dados: " db_name
+                question_number=2
+                continue
+            
+            elif [ "$ans_at" = "n" ]; then
+                read -p "Digite o nome do banco de dados: " db_name
+                printf "\n...\n"
+                read -p "Digite a senha do administrador do banco de dados: " root_pass
+                printf "\n...\n"
+                read -p "Digite o nome do administrador do banco de dados: " root_name
+                printf "\n...\n"
+                read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
+                printf "\n...\n"
+                    if [ $ans_a2 = "y" ]; then
+                    read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
                     printf "\n...\n"
-                    read -p "Digite a senha do administrador do banco de dados: " root_pass
-                    printf "\n...\n"
-                    read -p "Digite o nome do administrador do banco de dados: " root_name
-                    printf "\n...\n"
-                    read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
-                    printf "\n...\n"
-                        if [ $ans_a2 = "y" ]; then
-                        read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
-                        printf "\n...\n"
-                        fi
-                fi
-            fi
+                    fi
 
+                question_number=2
+                continue
+
+            else
+                printf "\nDigite um comando válido.\n"
+                continue
+            fi
+        
+        elif [ "$ans_a1" = "n" ]; then
             question_number=2
+            continue
+            
+        else
+            printf "\nDigite um comando válido.\n"
             continue
         fi
 
@@ -58,15 +67,19 @@ while true; do
         read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
         printf "\n...\n"
         
-        if [ "$ans_b1" != "y" ] && [ "$ans_b1" != "n" ]; then
-            printf "\nDigite um comando válido.\n"
-            continue
-        
-        else
+        if [ "$ans_b1" = "y" ]; then
             read -p "Deseja criar quantos contêineres na máquina? " n_cont
             printf "\n...\n"
-
+            
             question_number=3
+            continue
+
+        elif [ "$ans_b1" = "n" ]; then
+            question_number=3
+            continue
+
+        else
+            printf "\nDigite um comando válido.\n"
             continue
         fi
 
