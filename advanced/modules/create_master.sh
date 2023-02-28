@@ -9,12 +9,6 @@ printf "\n${GREEN}Configurando mysql master...${NC}\n"
     root_name="$2"
     root_pass="$3"
 
-    image=mysql
-    image_port=3306
-    volume_name=mysql_volume
-    service_name=mysql_master
-    network_name=mysql_network
-
 printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
     export DEBIAN_FRONTEND=noninteractive
@@ -32,14 +26,21 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     apt-get autoremove -y
 
     docker pull mysql
+    docker pull httpd
     docker pull nginx
+
+printf "\n${GREEN}Criando volumes, rede e cluster...${NC}\n"
+
+    docker swarm init
+    worker_token=$(docker swarm join-token worker -q)
+    manager_token=$(docker swarm join-token manager -q)
 
 printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 
     echo "version: '3.9'" > docker-compose.yml
     echo "services:" >> docker-compose.yml
-    echo "  $service_name:" >> docker-compose.yml
-    echo "    image: $image" >> docker-compose.yml
+    echo "  mysql_db:" >> docker-compose.yml
+    echo "    image: mysql" >> docker-compose.yml
     echo "    restart: always" >> docker-compose.yml
     echo "    environment:" >> docker-compose.yml
     echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
@@ -47,11 +48,26 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
     echo "      MYSQL_USER: $root_name" >> docker-compose.yml
     echo "      MYSQL_PASSWORD: $root_pass" >> docker-compose.yml
     echo "    ports:" >> docker-compose.yml
-    echo "      - '$image_port:$image_port'" >> docker-compose.yml
+    echo "      - '3306:3306'" >> docker-compose.yml
     echo "    volumes:" >> docker-compose.yml
-    echo "      - $volume_name:/var/lib/mysql" >> docker-compose.yml
+    echo "      - db:/var/lib/mysql" >> docker-compose.yml
+    echo "    networks:" >> docker-compose.yml
+    echo "      - cluster_network" >> docker-compose.yml
+    echo "  apache_web_server:" >> docker-compose.yml
+    echo "    image: httpd" >> docker-compose.yml
+    echo "    restart: always" >> docker-compose.yml
+    echo "    deploy:" >> docker-compose.yml
+    echo "      replicas: 3" >> docker-compose.yml
+    echo "    volumes:" >> docker-compose.yml
+    echo "      - type: volume" >> docker-compose.yml
+    echo "      - app" >> docker-compose.yml
+    echo "    networks:" >> docker-compose.yml
+    echo "      - cluster_network" >> docker-compose.yml
     echo "volumes:" >> docker-compose.yml
-    echo "  $volume_name:" >> docker-compose.yml
+    echo "  db:" >> docker-compose.yml
+    echo "  app:" >> docker-compose.yml
+    echo "networks:" >> docker-compose.yml
+    echo "  cluster_network:" >> docker-compose.yml
 
     docker-compose up -d
     sleep 60
@@ -63,13 +79,6 @@ printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
     # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
     docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
-
-printf "\n${GREEN}Criando cluster e rede do mysql...${NC}\n"
-
-    docker swarm init
-    docker network create --driver overlay --scope global $network_name
-    worker_token=$(docker swarm join-token worker -q)
-    manager_token=$(docker swarm join-token manager -q)
 
 printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
@@ -98,4 +107,4 @@ printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
 printf "\n${GREEN}Montando pasta compartilhada por NFS na pasta atual...${NC}\n"
 
-    mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
+    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
