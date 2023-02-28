@@ -50,4 +50,4 @@ printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
 printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
     worker_ip=$(hostname -I | awk '{print $1}')
-    sed -i "/upstream all/a\        server $worker_ip" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    sed -i "/upstream all/a\        server $worker_ip;" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf

@@ -80,7 +80,7 @@ printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 printf "\n${GREEN}Criando proxy...${NC}\n"
     cd modules/proxy || return
     master_ip=$(hostname -I | awk '{print $1}')      
-    sed -i "/upstream all/a\        server $master_ip" nginx.conf
+    sed -i "/upstream all/a\        server $master_ip;" nginx.conf
     cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
     docker build -t nginx_configured .
     cd ..
@@ -95,3 +95,7 @@ printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
     echo "master_ip=${master_ip}" >> master_vars.conf
     echo "worker_token=${worker_token}" >> master_vars.conf
     echo "manager_token=${manager_token}" >> master_vars.conf
+
+printf "\n${GREEN}Montando pasta compartilhada por NFS na pasta atual...${NC}\n"
+
+    mount -o v3 $ip_master:/var/lib/docker/volumes/advanced_mysql_volume/_data shared
