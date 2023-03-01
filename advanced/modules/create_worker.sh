@@ -31,6 +31,7 @@ printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n
 printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
 
     docker swarm join --token $worker_token $master_ip:2377
+    worker_ip=$(hostname -I | awk '{print $1}')
 
 printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 

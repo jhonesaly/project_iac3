@@ -111,7 +111,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
 
         num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
-        if [ -n "$num_workers" ] && [ "$(expr "$num_workers" : '^[0-9]*$')" -gt 0 ] && [ $num_workers -ne $last_num_workers ]; then
+        if [ $num_workers -ne $last_num_workers ]; then
             printf "\n${GREEN}Novo worker detectado!${NC}\n"
                 docker stop nginx_proxy
                 docker rm nginx_proxy
@@ -128,7 +128,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
                     --restart=always \
                     --network=cluster_network \
                     -p 4500:4500 nginx_configured
-                last_num_workers=num_workers
+                last_num_workers=$num_workers
                 cd - || return
             continue
         fi
