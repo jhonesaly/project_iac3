@@ -105,6 +105,27 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
     cd ..
     docker run --name nginx_proxy -dti --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
 
+    last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
+
+    while true; do
+
+        num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
+
+        if [ $num_workers -ne $last_num_workers ]; then
+            printf "\n${GREEN}Novo worker detectado...${NC}\n"
+                docker stop nginx_proxy
+                docker rm nginx_proxy
+                docker build -t nginx_configured .
+                docker run --name nginx_proxy -dti --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
+                last_num_workers=num_workers
+            continue
+        fi
+
+        sleep 60s
+    
+    done & 
+
+
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
     echo "db_name=${db_name}" > master_vars.conf
