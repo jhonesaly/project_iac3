@@ -22,11 +22,7 @@ NC='\033[0m'
                 read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
                 printf "\n...\n"
                 if [ "$ans_at" = "y" ]; then
-                    db_name='test_db'
-                    root_pass='123'
-                    root_name='tester'
-                    ans_a2='y'
-                    n_rand_data='5'
+                    source master_vars.conf
 
                     question_number=2
                     continue
@@ -72,7 +68,8 @@ NC='\033[0m'
             if [ "$ans_b1" = "y" ]; then
                 read -p "Deseja criar quantos contêineres na máquina? " n_cont
                 printf "\n...\n"
-                
+                source master_vars.conf
+
                 question_number=3
                 continue
 

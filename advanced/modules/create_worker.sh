@@ -5,7 +5,6 @@ NC='\033[0m'
 
 printf "\n${GREEN}Configurando mysql worker...${NC}\n"
 
-    source master_vars.conf
     # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token, manager_token
     n_cont="$1"
 
