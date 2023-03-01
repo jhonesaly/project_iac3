@@ -104,33 +104,33 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
         -p 4500:4500 nginx_configured
     sleep 30
 
-    # last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
+    last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
 
-    # while true; do
+    while true; do
 
-    #     num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
+        num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
-    #     if [ $num_workers -ne $last_num_workers ]; then
-    #         printf "\n${GREEN}Novo worker detectado!${NC}\n"
-    #             docker stop nginx_proxy
-    #             docker rm nginx_proxy
+        if [ $num_workers -ne $last_num_workers ]; then
+            printf "\n${GREEN}Novo worker detectado!${NC}\n"
+                docker stop nginx_proxy
+                docker rm nginx_proxy
 
-    #             # coletando info do novo worker
-    #             new_worker_id=$(docker node ls -q | xargs docker node inspect -f '{{ .ID }}' | head -n 1)
-    #             new_worker_ip=$(docker node inspect --format '{{ .Status.Addr }}' $new_worker_id)
+                # coletando info do novo worker
+                new_worker_id=$(docker node ls -q | xargs docker node inspect -f '{{ .ID }}' | head -n 1)
+                new_worker_ip=$(docker node inspect --format '{{ .Status.Addr }}' $new_worker_id)
 
-    #             cd /var/lib/docker/volumes/proxy_volume/_data || return
-    #             sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
-    #             docker build -t nginx_configured .
-    #             docker run --name nginx_proxy -dti --network=cluster_network --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
-    #             last_num_workers=num_workers
-    #             cd - || return
-    #         continue
-    #     fi
+                cd /var/lib/docker/volumes/proxy_volume/_data || return
+                sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
+                docker build -t nginx_configured .
+                docker run --name nginx_proxy -dti --network=cluster_network --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
+                last_num_workers=num_workers
+                cd - || return
+            continue
+        fi
 
-    #     sleep 30s
+        sleep 30s
     
-    # done & 
+    done & 
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
