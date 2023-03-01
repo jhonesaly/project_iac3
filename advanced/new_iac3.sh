@@ -75,7 +75,6 @@ NC='\033[0m'
             if [ "$ans_b1" = "y" ]; then
                 read -p "Deseja criar quantos contêineres na máquina? " n_cont
                 printf "\n...\n"
-                source master_vars.conf
 
                 question_number=3
                 continue
