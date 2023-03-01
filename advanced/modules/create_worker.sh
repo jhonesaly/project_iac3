@@ -20,6 +20,8 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
+    docker pull python
+
 printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n"
 
     mount -o v3 $master_ip:/var/lib/docker/volumes/app_volume/_data /var/lib/docker/volumes/app_volume/_data

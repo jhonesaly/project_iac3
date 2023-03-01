@@ -93,12 +93,10 @@ NC='\033[0m'
 
 ## 2 - Executando módulos
 
-
-
     if [ "$ans_a1" = "y" ]; then ## - Cria mysql master
 
         printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
-        ./modules/create_master.sh "$db_name" "$root_name" "$root_pass" 
+        ./modules/create_leader.sh "$db_name" "$root_name" "$root_pass" 
 
         if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
             printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
