@@ -7,6 +7,7 @@ printf "\n${GREEN}Configurando mysql worker...${NC}\n"
 
     source master_vars.conf
     # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token, manager_token
+    n_cont="$1"
 
 printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
@@ -29,28 +30,8 @@ printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um
 
 printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
-    echo "version: '3.9'" > docker-compose.yml
-    echo "services:" >> docker-compose.yml
-    echo "  python_app:" >> docker-compose.yml
-    echo "    image: python" >> docker-compose.yml
-    echo "    restart: always" >> docker-compose.yml
-    echo "    deploy:" >> docker-compose.yml
-    echo "      replicas: 3" >> docker-compose.yml
-    echo "    volumes:" >> docker-compose.yml
-    echo "      - app" >> docker-compose.yml
-    echo "    networks:" >> docker-compose.yml
-    echo "      - cluster_network" >> docker-compose.yml
-    echo "  nginx_proxy:" >> docker-compose.yml
-    echo "    image: nginx" >> docker-compose.yml
-    echo "    restart: always" >> docker-compose.yml
-    echo "    deploy:" >> docker-compose.yml
-    echo "      replicas: 1" >> docker-compose.yml
-    echo "    networks:" >> docker-compose.yml
-    echo "      - cluster_network" >> docker-compose.yml
-    echo "volumes:" >> docker-compose.yml
-    echo "  app:" >> docker-compose.yml
-    echo "networks:" >> docker-compose.yml
-    echo "  cluster_network:" >> docker-compose.yml
-
-    docker-compose up -d
-    sleep 60
+    docker service create --name python_app_service \
+        --mount type=volume,src=app_volume,dst=/
+        --replicas=$n_cont \
+        --network=cluster_network \
+        python
