@@ -6,7 +6,6 @@ NC='\033[0m'
 printf "\n${GREEN}Configurando mysql worker...${NC}\n"
 
     source master_vars.conf
-
     # vars in master_vars.conf: db_name, root_name, root_pass, master_ip, worker_token, manager_token
 
 printf "\n${GREEN}Instalando pacotes...${NC}\n"
@@ -20,13 +19,13 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     systemctl daemon-reexec
     apt-get autoremove -y
 
-printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
-
-    docker swarm join --token $worker_token
-
 printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n"
 
     mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_app/_data /var/lib/docker/volumes/advanced_app/_data
+
+printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
+
+    docker swarm join --token $worker_token
 
 printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
@@ -58,4 +57,4 @@ printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
 printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
     worker_ip=$(hostname -I | awk '{print $1}')
-    sed -i "/upstream all/a\        server $worker_ip;" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
+    sed -i "/upstream all/a\        server $worker_ip:80;" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf

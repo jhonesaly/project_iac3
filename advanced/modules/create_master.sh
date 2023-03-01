@@ -62,13 +62,6 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
     echo "      - app" >> docker-compose.yml
     echo "    networks:" >> docker-compose.yml
     echo "      - cluster_network" >> docker-compose.yml
-    echo "  nginx_proxy:" >> docker-compose.yml
-    echo "    image: nginx" >> docker-compose.yml
-    echo "    restart: always" >> docker-compose.yml
-    echo "    deploy:" >> docker-compose.yml
-    echo "      replicas: 1" >> docker-compose.yml
-    echo "    networks:" >> docker-compose.yml
-    echo "      - cluster_network" >> docker-compose.yml
     echo "volumes:" >> docker-compose.yml
     echo "  db:" >> docker-compose.yml
     echo "  app:" >> docker-compose.yml
@@ -80,28 +73,37 @@ printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
-    MYSQL_CONTAINER_ID=$(docker ps --filter "name=advanced_mysql_db_1" --format "{{.ID}}")
-    printf "\nO ID do mysql_master contêiner é : $MYSQL_CONTAINER_ID\n"
-    # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
-    docker cp modules/dbscript.sql $MYSQL_CONTAINER_ID:/dbscript.sql
-    docker exec -i $MYSQL_CONTAINER_ID sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
+    mysql_container_id=$(docker ps --filter "name=advanced_mysql_db_1" --format "{{.ID}}")
+    printf "\nO ID do advanced_mysql_db é: $mysql_container_id\n"
+    # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $mysql_container_id:/dbscript.sql
+    docker cp modules/database/* $mysql_container_id:
+    docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
+
+printf "\n${GREEN}Criando aplicação no container...${NC}\n"
+
+    python_container_id=$(docker ps --filter "name=advanced_python_app_1" --format "{{.ID}}")
+    printf "\nO ID do advanced_python_app é: $python_container_id\n"
+    # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $mysql_container_id:/dbscript.sql
+    docker cp modules/app/* $python_container_id:
 
 printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
-    cp modules/rand_insert.py /var/lib/docker/volumes/advanced_app/_data
+    cp app/* /var/lib/docker/volumes/advanced_app/_data
     echo "/var/lib/docker/volumes/advanced_app/_data *(rw,sync,subtree_check)" >> /etc/exports
     exportfs -ar
     systemctl restart nfs-kernel-server
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
+    
+    docker volume create proxy_volume
     cd modules/proxy || return
     master_ip=$(hostname -I | awk '{print $1}')      
-    sed -i "/upstream all/a\        server $master_ip;" nginx.conf
-    cp nginx.conf /var/lib/docker/volumes/advanced_mysql_volume/_data
+    sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
+    cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
     docker build -t nginx_configured .
     cd ..
     cd ..
-    docker run --name nginx_proxy -dti -p 4500:4500 nginx_configured
+    docker run --name nginx_proxy -dti --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
@@ -111,7 +113,3 @@ printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
     echo "master_ip=${master_ip}" >> master_vars.conf
     echo "worker_token=${worker_token}" >> master_vars.conf
     echo "manager_token=${manager_token}" >> master_vars.conf
-
-printf "\n${GREEN}Montando pasta compartilhada por NFS na pasta atual...${NC}\n"
-
-    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_app/_data shared
