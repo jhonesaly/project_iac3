@@ -52,6 +52,7 @@ printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
         -e MYSQL_PASSWORD=$root_pass \
         -p 3306:3306 \
         -v db_volume:/var/lib/mysql \
+        --restart=always \
         --network=cluster_network \
         mysql
     mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
@@ -59,13 +60,14 @@ printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
-    docker cp modules/database/* $mysql_container_id:/var/lib/mysql
+    cp modules/database/* /var/lib/docker/volumes/db_volume/_data
     docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
 
 printf "\n${GREEN}Criando container do python_app...${NC}\n"
 
     docker run -d --name python_app \
-        -v app_volume:/var/lib/python \
+        -v app_volume: \
+        --restart=always \
         --network=cluster_network \
         python
     python_container_id=$(docker ps --filter "name=python_app" --format "{{.ID}}")
@@ -73,26 +75,25 @@ printf "\n${GREEN}Criando container do python_app...${NC}\n"
 
 printf "\n${GREEN}Criando aplicação no container...${NC}\n"
 
-    docker cp modules/app/* $python_container_id:/var/lib/python
+    cp modules/app/* /var/lib/docker/volumes/app_volume/_data
 
 printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
 
-    cp app/* /var/lib/docker/volumes/advanced_app/_data
-    echo "/var/lib/docker/volumes/advanced_app/_data *(rw,sync,subtree_check)" >> /etc/exports
+    cp app/* /var/lib/docker/volumes/app_volume/_data
+    echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
     exportfs -ar
     systemctl restart nfs-kernel-server
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
     
-    cd modules/proxy || return
+    cd /var/lib/docker/volumes/proxy_volume/_data || return
     master_ip=$(hostname -I | awk '{print $1}')      
     sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
     cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
     docker build -t nginx_configured .
-    cd ..
-    cd ..
+    cd - || return
     docker run --name nginx_proxy -dti \
-        -v proxy_volume:/var/lib/nginx \
+        -v proxy_volume: \
         --network=cluster_network \
         -p 4500:4500 nginx_configured
     last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')

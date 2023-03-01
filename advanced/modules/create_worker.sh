@@ -33,7 +33,7 @@ printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um
 printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
     docker service create --name python_app_service \
-        --mount type=volume,src=app_volume,dst=/
+        --mount type=volume,src=app_volume,dst= \
         --replicas=$n_cont \
         --network=cluster_network \
         python
