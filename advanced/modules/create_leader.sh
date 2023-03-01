@@ -65,7 +65,7 @@ printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 printf "\n${GREEN}Criando container do python_app...${NC}\n"
 
     docker run -d --name python_app \
-        -v app_volume:/app \
+        -v app_volume:/ \
         --network=cluster_network \
         python
     printf "\nO ID do advanced_python_app é: $python_container_id\n"

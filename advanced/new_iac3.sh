@@ -22,12 +22,11 @@ NC='\033[0m'
                 read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
                 printf "\n...\n"
                 if [ "$ans_at" = "y" ]; then
-                    db_name='testdb'
+                    db_name='test_db'
                     root_pass='123'
                     root_name='tester'
-                    n_cont='2'
                     ans_a2='y'
-                    n_rand_data='1'
+                    n_rand_data='5'
 
                     question_number=2
                     continue
@@ -112,7 +111,7 @@ NC='\033[0m'
 
     if [ "$ans_b1" = "y" ]; then ## - Cria mysql worker
         printf "\n${GREEN}Iniciando criação do mysql worker...${NC}\n"
-        ./modules/create_worker.sh "$db_name" "$root_name" "$root_pass" "$n_cont"
+        ./modules/create_worker.sh "$n_cont"
     fi
 
 ## 3 - Fim
