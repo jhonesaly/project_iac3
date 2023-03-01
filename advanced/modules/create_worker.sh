@@ -21,7 +21,7 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
 printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n"
 
-    mount -o v3 $master_ip:/var/lib/docker/volumes/advanced_app/_data /var/lib/docker/volumes/advanced_app/_data
+    mount -o v3 $master_ip:/var/lib/docker/volumes/app_volume/_data /var/lib/docker/volumes/app_volume/_data
 
 printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
 
@@ -54,7 +54,3 @@ printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
     docker-compose up -d
     sleep 60
-
-printf "\n${GREEN}Adicionando ip do worker ao proxy...${NC}\n"
-    worker_ip=$(hostname -I | awk '{print $1}')
-    sed -i "/upstream all/a\        server $worker_ip:80;" /var/lib/docker/volumes/advanced_mysql_volume/_data/nginx.conf
