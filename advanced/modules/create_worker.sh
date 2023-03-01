@@ -13,7 +13,8 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
     export DEBIAN_FRONTEND=noninteractive
 
-    apt-get update
+    apt-get update -y -qq
+    apt-get upgrade -y -qq
     apt-get install docker.io -y -qq
     apt-get install nfs-common -y -qq
     systemctl daemon-reexec
