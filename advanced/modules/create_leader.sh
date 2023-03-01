@@ -95,6 +95,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
     master_ip=$(hostname -I | awk '{print $1}')      
     sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
     cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
+    cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
     docker build -t nginx_configured .
     cd - || return
     docker run --name nginx_proxy -dti \
