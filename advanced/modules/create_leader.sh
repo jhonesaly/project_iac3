@@ -29,64 +29,53 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
     docker pull python
     docker pull nginx
 
-printf "\n${GREEN}Criando volumes, rede e cluster...${NC}\n"
+printf "\n${GREEN}Criando volumes...${NC}\n"
+
+    docker volume create db_volume
+    docker volume create app_volume
+    docker volume create proxy_volume
+
+printf "\n${GREEN}Criando cluster e sua rede...${NC}\n"
 
     docker swarm init
     worker_token=$(docker swarm join-token worker -q)
     manager_token=$(docker swarm join-token manager -q)
+    docker network create cluster_network
 
-printf "\n${GREEN}Criando container do mysql mestre...${NC}\n"
 
-    echo "version: '3.9'" > docker-compose.yml
-    echo "services:" >> docker-compose.yml
-    echo "  mysql_db:" >> docker-compose.yml
-    echo "    image: mysql" >> docker-compose.yml
-    echo "    restart: always" >> docker-compose.yml
-    echo "    environment:" >> docker-compose.yml
-    echo "      MYSQL_ROOT_PASSWORD: $root_pass" >> docker-compose.yml
-    echo "      MYSQL_DATABASE: $db_name" >> docker-compose.yml
-    echo "      MYSQL_USER: $root_name" >> docker-compose.yml
-    echo "      MYSQL_PASSWORD: $root_pass" >> docker-compose.yml
-    echo "    ports:" >> docker-compose.yml
-    echo "      - '3306:3306'" >> docker-compose.yml
-    echo "    volumes:" >> docker-compose.yml
-    echo "      - db:/var/lib/mysql" >> docker-compose.yml
-    echo "    networks:" >> docker-compose.yml
-    echo "      - cluster_network" >> docker-compose.yml
-    echo "  python_app:" >> docker-compose.yml
-    echo "    image: python" >> docker-compose.yml
-    echo "    restart: always" >> docker-compose.yml
-    echo "    deploy:" >> docker-compose.yml
-    echo "      replicas: 1" >> docker-compose.yml
-    echo "    volumes:" >> docker-compose.yml
-    echo "      - app" >> docker-compose.yml
-    echo "    networks:" >> docker-compose.yml
-    echo "      - cluster_network" >> docker-compose.yml
-    echo "volumes:" >> docker-compose.yml
-    echo "  db:" >> docker-compose.yml
-    echo "  app:" >> docker-compose.yml
-    echo "networks:" >> docker-compose.yml
-    echo "  cluster_network:" >> docker-compose.yml
+printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
 
-    docker-compose up -d
-    sleep 60
+    docker run -d --name mysql_db \
+        -e MYSQL_ROOT_PASSWORD=$root_pass \
+        -e MYSQL_DATABASE=$db_name \
+        -e MYSQL_USER=$root_name \
+        -e MYSQL_PASSWORD=$root_pass \
+        -p 3306:3306 \
+        -v db_volume:/var/lib/mysql \
+        --network cluster_network \
+        mysql
+    printf "\nO ID do mysql_db é: $mysql_container_id\n"
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
-    mysql_container_id=$(docker ps --filter "name=advanced_mysql_db_1" --format "{{.ID}}")
-    printf "\nO ID do advanced_mysql_db é: $mysql_container_id\n"
-    # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $mysql_container_id:/dbscript.sql
+    mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
     docker cp modules/database/* $mysql_container_id:
     docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /dbscript.sql"
+
+printf "\n${GREEN}Criando container do python_app...${NC}\n"
+
+    docker run -d --name python_app \
+        -v app_volume:/app \
+        --network cluster_network \
+        python
+    printf "\nO ID do advanced_python_app é: $python_container_id\n"
 
 printf "\n${GREEN}Criando aplicação no container...${NC}\n"
 
     python_container_id=$(docker ps --filter "name=advanced_python_app_1" --format "{{.ID}}")
-    printf "\nO ID do advanced_python_app é: $python_container_id\n"
-    # docker cp /disk2/publica/project_iac3/advanced/modules/dbscript.sql $mysql_container_id:/dbscript.sql
     docker cp modules/app/* $python_container_id:
 
-printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
+printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
 
     cp app/* /var/lib/docker/volumes/advanced_app/_data
     echo "/var/lib/docker/volumes/advanced_app/_data *(rw,sync,subtree_check)" >> /etc/exports
@@ -95,7 +84,6 @@ printf "\n${GREEN}Compartilhando volume via NFS...${NC}\n"
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
     
-    docker volume create proxy_volume
     cd modules/proxy || return
     master_ip=$(hostname -I | awk '{print $1}')      
     sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
