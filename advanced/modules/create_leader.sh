@@ -57,6 +57,7 @@ printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
         mysql
     mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
     printf "\nO ID do container é: $mysql_container_id\n"
+    sleep 30
 
 printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
@@ -72,6 +73,7 @@ printf "\n${GREEN}Criando container do python_app...${NC}\n"
         python
     python_container_id=$(docker ps --filter "name=python_app" --format "{{.ID}}")
     printf "\nO ID do container é: $python_container_id\n"
+    sleep 30
 
 printf "\n${GREEN}Criando aplicação no container...${NC}\n"
 
@@ -96,7 +98,9 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
         -v proxy_volume: \
         --network=cluster_network \
         -p 4500:4500 nginx_configured
-    last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
+    sleep 30
+
+    # last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
 
     # while true; do
 
