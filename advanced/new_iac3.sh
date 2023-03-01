@@ -40,6 +40,13 @@ NC='\033[0m'
                         read -p "Deseja inserir quantos produtos aleatórios? " n_rand_data
                         printf "\n...\n"
                         fi
+                    
+                    echo "ans_a1=${ans_a1}" > master_vars.conf
+                    echo "ans_a2=${ans_a1}" >> master_vars.conf
+                    echo "db_name=${db_name}" >> master_vars.conf
+                    echo "root_name=${root_name}" >> master_vars.conf
+                    echo "root_pass=${root_pass}" >> master_vars.conf
+                    echo "n_rand_data=${n_rand_data}" >> master_vars.conf
 
                     question_number=2
                     continue
@@ -87,6 +94,8 @@ NC='\033[0m'
 
         break
     done
+
+
 
 ## 2 - Executando módulos
 

@@ -105,7 +105,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
         -p 4500:4500 nginx_configured
     sleep 30
 
-    last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
+    last_num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
     while true; do
 
@@ -123,7 +123,11 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
                 cd /var/lib/docker/volumes/proxy_volume/_data || return
                 sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
                 docker build -t nginx_configured .
-                docker run --name nginx_proxy -dti --network=cluster_network --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
+                docker run --name nginx_proxy -dti \
+                    -v proxy_volume \
+                    --restart=always \
+                    --network=cluster_network \
+                    -p 4500:4500 nginx_configured
                 last_num_workers=num_workers
                 cd - || return
             continue
@@ -135,9 +139,6 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
-    echo "db_name=${db_name}" > master_vars.conf
-    echo "root_name=${root_name}" >> master_vars.conf
-    echo "root_pass=${root_pass}" >> master_vars.conf
     echo "master_ip=${master_ip}" >> master_vars.conf
     echo "worker_token=${worker_token}" >> master_vars.conf
     echo "manager_token=${manager_token}" >> master_vars.conf

@@ -25,16 +25,17 @@ printf "\n${GREEN}Instalando pacotes...${NC}\n"
 printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n"
 
     docker volume create app_volume
+    mkdir -p /var/lib/docker/volumes/app_volume/_data
     mount -o v3 $master_ip:/var/lib/docker/volumes/app_volume/_data /var/lib/docker/volumes/app_volume/_data
 
 printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
 
-    docker swarm join --token $worker_token
+    docker swarm join --token $worker_token $master_ip:2377
 
 printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
 
     docker service create --name python_app_service \
-        --mount type=volume,src=app_volume,dst=/ \
+        --mount type=volume,src=app_volume \
         --replicas=$n_cont \
         --network=cluster_network \
         python
