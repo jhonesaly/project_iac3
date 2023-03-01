@@ -52,7 +52,7 @@ printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
         -e MYSQL_PASSWORD=$root_pass \
         -p 3306:3306 \
         -v db_volume:/var/lib/mysql \
-        --network cluster_network \
+        --network=cluster_network \
         mysql
     printf "\nO ID do mysql_db é: $mysql_container_id\n"
 
@@ -66,7 +66,7 @@ printf "\n${GREEN}Criando container do python_app...${NC}\n"
 
     docker run -d --name python_app \
         -v app_volume:/app \
-        --network cluster_network \
+        --network=cluster_network \
         python
     printf "\nO ID do advanced_python_app é: $python_container_id\n"
 
@@ -91,7 +91,7 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
     docker build -t nginx_configured .
     cd ..
     cd ..
-    docker run --name nginx_proxy -dti --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
+    docker run --name nginx_proxy -dti --network=cluster_network --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
 
     last_num_workers=$(docker node ls | grep -c 'Ready\s*Active\s*Worker')
 
@@ -108,11 +108,13 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
                 new_worker_id=$(docker node ls -q | xargs docker node inspect -f '{{ .ID }}' | head -n 1)
                 new_worker_ip=$(docker node inspect --format '{{ .Status.Addr }}' $new_worker_id)
 
-                # usar o novo endereço IP em nginx.conf
+                cd modules/proxy || return
                 sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
                 docker build -t nginx_configured .
-                docker run --name nginx_proxy -dti --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
+                docker run --name nginx_proxy -dti --network=cluster_network --mount type=volume,src=proxy_volume,dst=/ -p 4500:4500 nginx_configured
                 last_num_workers=num_workers
+                cd ..
+                cd ..
             continue
         fi
 
