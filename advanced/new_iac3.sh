@@ -48,6 +48,7 @@
                     echo "db_name=${db_name}" >> master_vars.conf
                     echo "root_name=${root_name}" >> master_vars.conf
                     echo "root_pass=${root_pass}" >> master_vars.conf
+                    echo "n_cont=${n_cont}" >> master_vars.conf
                     echo "n_rand_data=${n_rand_data}" >> master_vars.conf
 
                     question_number=2
@@ -108,7 +109,7 @@
             printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
             pip3 install pymysql
             master_ip=$(hostname -I | awk '{print $1}')
-            python3 ./modules/rand_insert.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
+            python3 ./modules/app/rand_insert.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
         fi    
     
     fi

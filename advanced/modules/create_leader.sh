@@ -83,13 +83,13 @@
         sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
         cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
         cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
-        docker build -t nginx_configured .
+        docker build -t nginx_ready .
         cd - || return
         docker run --name nginx_proxy -dti \
             -v proxy_volume \
             --restart=always \
             --network=cluster_network \
-            -p 4500:4500 nginx_configured
+            -p 4500:4500 nginx_ready
         sleep 30
 
         last_num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
@@ -107,12 +107,12 @@
 
                     cd /var/lib/docker/volumes/proxy_volume/_data || return
                     sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
-                    docker build -t nginx_configured .
+                    docker build -t nginx_ready .
                     docker run --name nginx_proxy -dti \
                         -v proxy_volume \
                         --restart=always \
                         --network=cluster_network \
-                        -p 4500:4500 nginx_configured
+                        -p 4500:4500 nginx_ready
                     last_num_workers=$num_workers
                     cd - || return
                 continue
@@ -136,7 +136,13 @@
 
 ## 4 - Aplicação
 
-    printf "\n${GREEN}Copiando aplicações para o volume...${NC}\n"
+    printf "\n${GREEN}Criando imagem configurada...${NC}\n"
+
+        cd modules/app || return     
+        docker build -t python_ready .
+        cd - || return
+
+    printf "\n${GREEN}Copiando arquivos para o volume da aplicação...${NC}\n"
 
         cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
 
@@ -145,5 +151,5 @@
         docker service create --name python_app_service \
             --mount type=volume,src=app_volume,dst=/var/lib/python \
             --replicas=$n_cont \
-            python
+            python_ready
         sleep 30

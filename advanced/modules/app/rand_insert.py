@@ -2,7 +2,6 @@ import random
 import sys
 from datetime import date, timedelta
 import pymysql
-import cryptography
 
 # Funções úteis
 def name_rand():
