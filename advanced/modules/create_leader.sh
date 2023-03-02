@@ -77,60 +77,62 @@
 
 ## 2 - Proxy
 
-printf "\n${GREEN}Criando proxy...${NC}\n"
-    
-    cd modules/proxy || return     
-    sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
-    cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
-    cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
-    docker build -t nginx_configured .
-    cd - || return
-    docker run --name nginx_proxy -dti \
-        -v proxy_volume \
-        --restart=always \
-        --network=cluster_network \
-        -p 4500:4500 nginx_configured
-    sleep 30
+    printf "\n${GREEN}Criando proxy...${NC}\n"
+        
+        cd modules/proxy || return     
+        sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
+        cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
+        cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
+        docker build -t nginx_configured .
+        cd - || return
+        docker run --name nginx_proxy -dti \
+            -v proxy_volume \
+            --restart=always \
+            --network=cluster_network \
+            -p 4500:4500 nginx_configured
+        sleep 30
 
-    last_num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
+        last_num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
-    while true; do
+        while true; do
 
-        num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
+            num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
-        if [ $num_workers -ne $last_num_workers ]; then
-            printf "\n${GREEN}Novo worker detectado!${NC}\n"
-                docker stop nginx_proxy
-                docker rm nginx_proxy
+            if [ $num_workers -ne $last_num_workers ]; then
+                printf "\n${GREEN}Novo worker detectado!${NC}\n"
+                    docker stop nginx_proxy
+                    docker rm nginx_proxy
 
-                # coletando info do novo worker
-                new_worker_id=$(docker node ls -q | xargs docker node inspect -f '{{ .ID }}' | head -n 1)
-                new_worker_ip=$(docker node inspect --format '{{ .Status.Addr }}' $new_worker_id)
+                    new_worker_ip=$(tail -n 1 /shared/ip_list.conf | awk -F= '{print $2}')
 
-                cd /var/lib/docker/volumes/proxy_volume/_data || return
-                sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
-                docker build -t nginx_configured .
-                docker run --name nginx_proxy -dti \
-                    -v proxy_volume \
-                    --restart=always \
-                    --network=cluster_network \
-                    -p 4500:4500 nginx_configured
-                last_num_workers=$num_workers
-                cd - || return
-            continue
-        fi
+                    cd /var/lib/docker/volumes/proxy_volume/_data || return
+                    sed -i "/upstream all/a\        server $new_worker_ip:80;" nginx.conf
+                    docker build -t nginx_configured .
+                    docker run --name nginx_proxy -dti \
+                        -v proxy_volume \
+                        --restart=always \
+                        --network=cluster_network \
+                        -p 4500:4500 nginx_configured
+                    last_num_workers=$num_workers
+                    cd - || return
+                continue
+            fi
 
-        sleep 30s
-    
-    done & 
+            sleep 30s
+        
+        done & 
+
+        mkdir -p /shared
+        printf "# Lista de IPs dos workers do cluster:\n\n" > /shared/ip_list.conf
 
 ## 3 - Compartilhamento de arquivos
 
-printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
+    printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
 
-    echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
-    exportfs -ar
-    systemctl restart nfs-kernel-server
+        echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
+        echo "/shared *(rw,sync,subtree_check)" >> /etc/exports
+        exportfs -ar
+        systemctl restart nfs-kernel-server
 
 ## 4 - Aplicação
 

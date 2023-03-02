@@ -26,10 +26,14 @@ printf "\n${GREEN}Adicionando pasta compartilhada com o master via NFS...${NC}\n
 
     docker volume create app_volume
     mkdir -p /var/lib/docker/volumes/app_volume/_data
+    mkdir -p /shared
     mount -o v3 $master_ip:/var/lib/docker/volumes/app_volume/_data /var/lib/docker/volumes/app_volume/_data
+    mount -o v3 $master_ip:/shared /shared
 
 printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um mysql master
 
     docker swarm join --token $worker_token $master_ip:2377
     worker_ip=$(hostname -I | awk '{print $1}')
+    hostname=$(hostname)
+    echo "worker_ip_$(hostname)=${worker_ip}" >> /shared/ip_list.conf
 
