@@ -138,7 +138,11 @@
 
     printf "\n${GREEN}Criando imagem configurada...${NC}\n"
 
-        cd modules/app || return     
+        cd modules/app || return
+        echo "ENV MASTER_IP=$master_ip" >> Dockerfile
+        echo "ENV DB_NAME=$db_name" >> Dockerfile
+        echo "ENV ROOT_PASS=$root_pass" >> Dockerfile
+        echo "ENV N_RAND_DATA=$n_rand_data" >> Dockerfile
         docker build -t python_ready .
         cd - || return
 
