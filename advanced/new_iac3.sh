@@ -106,10 +106,13 @@
         ./modules/create_leader.sh "$db_name" "$root_name" "$root_pass" "$n_cont" 
 
         if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
-            printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
-            pip3 install pymysql
-            master_ip=$(hostname -I | awk '{print $1}')
-            python3 ./modules/app/rand_insert.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
+            printf "\n${GREEN}Inserindo produtos aleatórios via shell...${NC}\n"
+                pip3 install pymysql
+                master_ip=$(hostname -I | awk '{print $1}')
+                python3 ./modules/app/rand_insert_shell.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
+            
+            printf "\n${GREEN}Inserindo produtos aleatórios via proxy...${NC}\n"
+                curl http://localhost:4500/rand_insert_proxy.py
         fi    
     
     fi

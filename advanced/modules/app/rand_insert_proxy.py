@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 from datetime import date, timedelta
@@ -22,17 +23,13 @@ def date_rand():
     return data.strftime('%Y-%m-%d')
 
 
-# Argumentos vindos do shell script
-master_ip = sys.argv[1]
-db_name = sys.argv[2]
-root_pass = sys.argv[3]
-n_rand_data = sys.argv[4]
+# Configurações do banco de dados
 
-# configurações do banco de dados
-host = master_ip
+host = os.environ['MASTER_IP']
 user = "root"
-password = root_pass
-database = db_name
+password = os.environ['ROOT_PASS']
+database = os.environ['DB_NAME']
+n_rand_data = os.environ['N_RAND_DATA']
 
 # criar conexão
 conn = pymysql.connect(host=host, user=user, password=password, database=database)
