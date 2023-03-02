@@ -2,49 +2,56 @@
 
 ## 0 - Configurações
 
-    GREEN='\033[0;32m'
-    NC='\033[0m'
+    printf "\n${GREEN}Declarando variáveis...${NC}\n"
 
-printf "\n${GREEN}Declarando variáveis...${NC}\n"
+        GREEN='\033[0;32m'
+        NC='\033[0m'
 
-    db_name="$1"
-    root_name="$2"
-    root_pass="$3"
-    n_cont="$4"
-    master_ip=$(hostname -I | awk '{print $1}') 
+        db_name="$1"
+        root_name="$2"
+        root_pass="$3"
+        n_cont="$4"
 
-printf "\n${GREEN}Instalando pacotes...${NC}\n"
+        master_ip=$(hostname -I | awk '{print $1}') 
 
-    export DEBIAN_FRONTEND=noninteractive
+    printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
-    apt-get update -y -qq
-    apt-get upgrade -y -qq
-    apt-get install docker.io -y -qq
-    apt-get install -y docker-compose -qq
-    apt-get install mysql-client-core-8.0 -y -qq
-    apt-get install -y python3 -qq
-    apt-get install -y python3-pip -qq
-    apt-get install nfs-server -y -qq
-    apt-get install -y nfs-kernel-server -y -qq
+        export DEBIAN_FRONTEND=noninteractive
 
-    systemctl daemon-reexec
-    apt-get autoremove -y
+        apt-get update -y -qq
+        apt-get upgrade -y -qq
+        apt-get install docker.io -y -qq
+        apt-get install -y docker-compose -qq
+        apt-get install mysql-client-core-8.0 -y -qq
+        apt-get install -y python3 -qq
+        apt-get install -y python3-pip -qq
+        apt-get install nfs-server -y -qq
+        apt-get install -y nfs-kernel-server -y -qq
 
-    docker pull mysql
-    docker pull python
-    docker pull nginx
+        systemctl daemon-reexec
+        apt-get autoremove -y
 
-printf "\n${GREEN}Criando volumes...${NC}\n"
+        docker pull mysql
+        docker pull python
+        docker pull nginx
 
-    docker volume create db_volume
-    docker volume create app_volume
-    docker volume create proxy_volume
+    printf "\n${GREEN}Criando volumes...${NC}\n"
 
-printf "\n${GREEN}Criando cluster e sua rede...${NC}\n"
+        docker volume create db_volume
+        docker volume create app_volume
+        docker volume create proxy_volume
 
-    docker swarm init
-    worker_token=$(docker swarm join-token worker -q)
-    manager_token=$(docker swarm join-token manager -q)
+    printf "\n${GREEN}Criando cluster e sua rede...${NC}\n"
+
+        docker swarm init
+        worker_token=$(docker swarm join-token worker -q)
+        manager_token=$(docker swarm join-token manager -q)
+
+    printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
+
+        echo "master_ip=${master_ip}" >> master_vars.conf
+        echo "worker_token=${worker_token}" >> master_vars.conf
+        echo "manager_token=${manager_token}" >> master_vars.conf
 
 ## 1 - Banco de dados
 
@@ -152,9 +159,3 @@ printf "\n${GREEN}Criando serviços do app...${NC}\n"
         --mount type=volume,src=app_volume,dst=/var/lib/python \
         --replicas=$n_cont \
         python
-
-printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
-
-    echo "master_ip=${master_ip}" >> master_vars.conf
-    echo "worker_token=${worker_token}" >> master_vars.conf
-    echo "manager_token=${manager_token}" >> master_vars.conf
