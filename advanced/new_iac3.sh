@@ -106,7 +106,6 @@
         if [ "$ans_a2" = "y" ]; then
             printf "\n${GREEN}Inserindo produtos aleatórios via shell...${NC}\n"
                 pip3 install pymysql
-                
                 python3 ./modules/app/rand_insert_shell.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
             
             printf "\n${GREEN}Inserindo produtos aleatórios via proxy...${NC}\n"

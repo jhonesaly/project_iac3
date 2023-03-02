@@ -18,6 +18,7 @@
         apt-get install docker.io -y -qq
         apt-get install -y docker-compose -qq
         apt-get install mysql-client-core-8.0 -y -qq
+        pat-get install mysql-server -y -qq
         apt-get install -y python3 -qq
         apt-get install -y python3-pip -qq
         apt-get install nfs-server -y -qq
@@ -45,7 +46,6 @@
     printf "\n${GREEN}Criando tokens ao master_vars.conf...${NC}\n"
 
         printf "\n\n" >> master_vars.conf
-        echo "master_ip=${master_ip}" >> master_vars.conf
         echo "worker_token=${worker_token}" >> master_vars.conf
         echo "manager_token=${manager_token}" >> master_vars.conf
 
@@ -86,7 +86,6 @@
         docker run --name nginx_proxy -dti \
             -v proxy_volume \
             --restart=always \
-            --network=cluster_network \
             -p 4500:4500 nginx_ready
         sleep 30
 
@@ -140,10 +139,10 @@
     printf "\n${GREEN}Criando imagem python configurada...${NC}\n"
 
         cd modules/app || return
-        echo "ENV MASTER_IP=$master_ip" >> Dockerfile
-        echo "ENV DB_NAME=$db_name" >> Dockerfile
-        echo "ENV ROOT_PASS=$root_pass" >> Dockerfile
-        echo "ENV N_RAND_DATA=$n_rand_data" >> Dockerfile
+        echo "ENV MASTER_IP=$master_ip" >> dockerfile
+        echo "ENV DB_NAME=$db_name" >> dockerfile
+        echo "ENV ROOT_PASS=$root_pass" >> dockerfile
+        echo "ENV N_RAND_DATA=$n_rand_data" >> dockerfile
         docker build -t python_ready .
         cd - || return
 
