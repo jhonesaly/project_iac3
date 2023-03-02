@@ -2,17 +2,12 @@
 
 ## 0 - Configurações
 
+    GREEN='\033[0;32m'
+    NC='\033[0m'
+
     printf "\n${GREEN}Declarando variáveis...${NC}\n"
 
-        GREEN='\033[0;32m'
-        NC='\033[0m'
-
-        db_name="$1"
-        root_name="$2"
-        root_pass="$3"
-        n_cont="$4"
-
-        master_ip=$(hostname -I | awk '{print $1}') 
+        source master_vars.conf
 
     printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
@@ -47,7 +42,7 @@
         worker_token=$(docker swarm join-token worker -q)
         manager_token=$(docker swarm join-token manager -q)
 
-    printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
+    printf "\n${GREEN}Criando tokens ao master_vars.conf...${NC}\n"
 
         printf "\n\n" >> master_vars.conf
         echo "master_ip=${master_ip}" >> master_vars.conf
@@ -77,7 +72,7 @@
 
 ## 2 - Proxy
 
-    printf "\n${GREEN}Criando proxy...${NC}\n"
+    printf "\n${GREEN}Criando imagem do nginx configurada...${NC}\n"
         
         cd modules/proxy || return     
         sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
@@ -85,12 +80,17 @@
         cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
         docker build -t nginx_ready .
         cd - || return
+    
+    printf "\n${GREEN}Criando container do proxy...${NC}\n"
+ 
         docker run --name nginx_proxy -dti \
             -v proxy_volume \
             --restart=always \
             --network=cluster_network \
             -p 4500:4500 nginx_ready
         sleep 30
+
+    printf "\n${GREEN}Criando worker inspect...${NC}\n"
 
         last_num_workers=$(docker node ls -q | xargs docker node inspect -f '{{ .Status.State }}' | grep -c 'ready')
 
@@ -122,12 +122,13 @@
         
         done & 
 
+    printf "\n${GREEN}Criando pasta compartilhada do proxy...${NC}\n"
         mkdir -p /shared
         printf "# Lista de IPs dos workers do cluster:\n\n" > /shared/ip_list.conf
 
-## 3 - Compartilhamento de arquivos
+## 3 - Compartilhamento
 
-    printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
+    printf "\n${GREEN}Configurando NFS para compartilhamento de arquivos...${NC}\n"
 
         echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
         echo "/shared *(rw,sync,subtree_check)" >> /etc/exports
@@ -136,7 +137,7 @@
 
 ## 4 - Aplicação
 
-    printf "\n${GREEN}Criando imagem configurada...${NC}\n"
+    printf "\n${GREEN}Criando imagem python configurada...${NC}\n"
 
         cd modules/app || return
         echo "ENV MASTER_IP=$master_ip" >> Dockerfile

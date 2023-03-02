@@ -15,15 +15,14 @@
     while true; do
 
         if [ $question_number -eq 1 ]; then
-            read -n 1 -p "Deseja criar um banco de dados mysql master? [y/n] " ans_a1
+            read -n 1 -p "Deseja criar um leader no cluster? [y/n] " ans_a1
             printf "\n...\n"
                     
             if [ "$ans_a1" = "y" ]; then
                 read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
                 printf "\n...\n"
-                if [ "$ans_at" = "y" ]; then
-                    source master_vars.conf
 
+                if [ "$ans_at" = "y" ]; then
                     question_number=2
                     continue
                 
@@ -43,6 +42,8 @@
                         printf "\n...\n"
                         fi
                     
+                    master_ip=$(hostname -I | awk '{print $1}')
+
                     echo "ans_a1=${ans_a1}" > master_vars.conf
                     echo "ans_a2=${ans_a1}" >> master_vars.conf
                     echo "db_name=${db_name}" >> master_vars.conf
@@ -50,6 +51,7 @@
                     echo "root_pass=${root_pass}" >> master_vars.conf
                     echo "n_cont=${n_cont}" >> master_vars.conf
                     echo "n_rand_data=${n_rand_data}" >> master_vars.conf
+                    echo "master_ip=${master_ip}" >> master_vars.conf
 
                     question_number=2
                     continue
@@ -58,7 +60,9 @@
                     printf "\n${GREEN}Digite um comando válido.${NC}\n"
                     continue
                 fi
-            
+                question_number=2
+                continue
+
             elif [ "$ans_a1" = "n" ]; then
                 question_number=2
                 continue
@@ -72,16 +76,10 @@
         fi
         
         if [ $question_number -eq 2 ] && [ "$ans_a1" = "n" ]; then
-            read -n 1 -p "Deseja criar um banco de dados mysql worker? [y/n] " ans_b1
+            read -n 1 -p "Deseja criar um worker no cluster? [y/n] " ans_b1
             printf "\n...\n"
             
-            if [ "$ans_b1" = "y" ]; then
-
-
-                question_number=3
-                continue
-
-            elif [ "$ans_b1" = "n" ]; then
+            if [ "$ans_b1" = "y" ] || [ "$ans_b1" = "n" ]; then
                 question_number=3
                 continue
 
@@ -96,19 +94,19 @@
         break
     done
 
-
-
 ## 2 - Executando módulos
 
-    if [ "$ans_a1" = "y" ]; then ## - Cria mysql master
+    source master_vars.conf
 
-        printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
-        ./modules/create_leader.sh "$db_name" "$root_name" "$root_pass" "$n_cont" 
+    if [ "$ans_a1" = "y" ]; then
 
-        if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
+        printf "\n${GREEN}Iniciando criação do leader...${NC}\n"   
+        ./modules/create_leader.sh
+
+        if [ "$ans_a2" = "y" ]; then
             printf "\n${GREEN}Inserindo produtos aleatórios via shell...${NC}\n"
                 pip3 install pymysql
-                master_ip=$(hostname -I | awk '{print $1}')
+                
                 python3 ./modules/app/rand_insert_shell.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
             
             printf "\n${GREEN}Inserindo produtos aleatórios via proxy...${NC}\n"
@@ -117,8 +115,8 @@
     
     fi
 
-    if [ "$ans_b1" = "y" ]; then ## - Cria mysql worker
-        printf "\n${GREEN}Iniciando criação do mysql worker...${NC}\n"
+    if [ "$ans_b1" = "y" ]; then
+        printf "\n${GREEN}Iniciando criação do worker...${NC}\n"
         ./modules/create_worker.sh
     fi
 
