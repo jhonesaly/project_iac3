@@ -85,7 +85,7 @@
  
         docker run --name nginx_proxy -dti \
             -v proxy_volume \
-            --restart=always \
+            --restart always \
             -p 4500:4500 nginx_ready
         sleep 30
 
@@ -109,7 +109,7 @@
                     docker build -t nginx_ready .
                     docker run --name nginx_proxy -dti \
                         -v proxy_volume \
-                        --restart=always \
+                        --restart always \
                         -p 4500:4500 nginx_ready
                     last_num_workers=$num_workers
                     cd - || return
