@@ -55,26 +55,24 @@
 
 ## 1 - Banco de dados
 
-printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
+    printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
 
-    docker run -d --name mysql_db \
-        -e MYSQL_ROOT_PASSWORD=$root_pass \
-        -e MYSQL_DATABASE=$db_name \
-        -e MYSQL_USER=$root_name \
-        -e MYSQL_PASSWORD=$root_pass \
-        -p 3306:3306 \
-        -v db_volume:/var/lib/mysql \
-        --restart always \
-        mysql
-    mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
-    sleep 30
+        docker run -d --name mysql_db \
+            -e MYSQL_ROOT_PASSWORD=$root_pass \
+            -e MYSQL_DATABASE=$db_name \
+            -e MYSQL_USER=$root_name \
+            -e MYSQL_PASSWORD=$root_pass \
+            -p 3306:3306 \
+            -v db_volume:/var/lib/mysql \
+            --restart always \
+            mysql
+        mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
+        sleep 30
 
-    printf "\nO ID do container é: $mysql_container_id\n"
+    printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
-printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
-
-    cp -r modules/database/* /var/lib/docker/volumes/db_volume/_data
-    docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
+        cp -r modules/database/* /var/lib/docker/volumes/db_volume/_data
+        docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
 
 ## 2 - Proxy
 
@@ -139,23 +137,10 @@ printf "\n${GREEN}Copiando aplicações para o volume...${NC}\n"
 
     cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
 
-printf "\n${GREEN}Criando container do python_app...${NC}\n"
-
-    docker run -dti --name python_app \
-        -v app_volume \
-        --restart always \
-        python
-    python_container_id=$(docker ps --filter "name=python_app" --format "{{.ID}}")
-    sleep 30
-
-    printf "\nO ID do container é: $python_container_id\n"
-    
-
-
-
 printf "\n${GREEN}Criando serviços do app...${NC}\n"
 
     docker service create --name python_app_service \
         --mount type=volume,src=app_volume,dst=/var/lib/python \
         --replicas=$n_cont \
         python
+    sleep 30
