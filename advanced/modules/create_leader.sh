@@ -49,6 +49,7 @@
 
     printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 
+        printf "\n\n" >> master_vars.conf
         echo "master_ip=${master_ip}" >> master_vars.conf
         echo "worker_token=${worker_token}" >> master_vars.conf
         echo "manager_token=${manager_token}" >> master_vars.conf
@@ -133,14 +134,14 @@ printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
 
 ## 4 - Aplicação
 
-printf "\n${GREEN}Copiando aplicações para o volume...${NC}\n"
+    printf "\n${GREEN}Copiando aplicações para o volume...${NC}\n"
 
-    cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
+        cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
 
-printf "\n${GREEN}Criando serviços do app...${NC}\n"
+    printf "\n${GREEN}Criando serviços do app...${NC}\n"
 
-    docker service create --name python_app_service \
-        --mount type=volume,src=app_volume,dst=/var/lib/python \
-        --replicas=$n_cont \
-        python
-    sleep 30
+        docker service create --name python_app_service \
+            --mount type=volume,src=app_volume,dst=/var/lib/python \
+            --replicas=$n_cont \
+            python
+        sleep 30

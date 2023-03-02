@@ -1,9 +1,9 @@
 #!/bin/bash
 
-GREEN='\033[0;32m'
-NC='\033[0m'
-
 ## 0 - Saudação
+
+    GREEN='\033[0;32m'
+    NC='\033[0m'
 
     printf "\n${GREEN}Iniciando protocolo new_iac_3...${NC}\n"
     printf "\n${GREEN}Em caso de dúvida, consulte a documentação disponível em <https://github.com/jhonesaly/project_iac3>${NC}\n\n"
