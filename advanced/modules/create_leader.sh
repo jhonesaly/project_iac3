@@ -110,7 +110,6 @@
                     docker run --name nginx_proxy -dti \
                         -v proxy_volume \
                         --restart=always \
-                        --network=cluster_network \
                         -p 4500:4500 nginx_ready
                     last_num_workers=$num_workers
                     cd - || return
