@@ -7,12 +7,14 @@ import pkgutil
 
 os.system('cls')
 
-need_libraries = ['cryptography', 'pymysql']
+need_libraries = ['pymysql']
 
 for lib in need_libraries:
     if not pkgutil.find_loader(lib):
         print(f"A biblioteca {lib} não está instalada. Instalando...")
         subprocess.run(['pip', 'install', lib])
+
+import pymysql
 
 
 # Funções úteis

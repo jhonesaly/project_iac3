@@ -1,6 +1,5 @@
 import os
 import random
-import sys
 from datetime import date, timedelta
 import pymysql
 
@@ -31,7 +30,8 @@ password = os.environ['ROOT_PASS']
 database = os.environ['DB_NAME']
 n_rand_data = os.environ['N_RAND_DATA']
 
-# criar conexão
+# Adicionando valores aleatórios
+
 conn = pymysql.connect(host=host, user=user, password=password, database=database)
 
 for i in range(int(n_rand_data)):
