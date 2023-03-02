@@ -33,10 +33,3 @@ printf "\n${GREEN}Adicionando nó ao cluster...${NC}\n" # Necessário já ter um
     docker swarm join --token $worker_token $master_ip:2377
     worker_ip=$(hostname -I | awk '{print $1}')
 
-printf "\n${GREEN}Criando serviço de containers do mysql worker...${NC}\n"
-
-    docker service create --name python_app_service \
-        --mount type=volume,src=app_volume \
-        --replicas=$n_cont \
-        --network=cluster_network \
-        python

@@ -1,13 +1,17 @@
 #!/bin/bash
 
-GREEN='\033[0;32m'
-NC='\033[0m'
+## 0 - Configurações
 
-printf "\n${GREEN}Configurando mysql master...${NC}\n"
+    GREEN='\033[0;32m'
+    NC='\033[0m'
+
+printf "\n${GREEN}Declarando variáveis...${NC}\n"
 
     db_name="$1"
     root_name="$2"
     root_pass="$3"
+    n_cont="$4"
+    master_ip=$(hostname -I | awk '{print $1}') 
 
 printf "\n${GREEN}Instalando pacotes...${NC}\n"
 
@@ -41,8 +45,8 @@ printf "\n${GREEN}Criando cluster e sua rede...${NC}\n"
     docker swarm init
     worker_token=$(docker swarm join-token worker -q)
     manager_token=$(docker swarm join-token manager -q)
-    docker network create cluster_network
 
+## 1 - Banco de dados
 
 printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
 
@@ -53,8 +57,7 @@ printf "\n${GREEN}Criando container do mysql_db...${NC}\n"
         -e MYSQL_PASSWORD=$root_pass \
         -p 3306:3306 \
         -v db_volume:/var/lib/mysql \
-        --restart=always \
-        --network=cluster_network \
+        --restart always \
         mysql
     mysql_container_id=$(docker ps --filter "name=mysql_db" --format "{{.ID}}")
     sleep 30
@@ -66,33 +69,11 @@ printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
     cp -r modules/database/* /var/lib/docker/volumes/db_volume/_data
     docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
 
-printf "\n${GREEN}Criando container do python_app...${NC}\n"
-
-    docker run -dti --name python_app \
-        -v app_volume \
-        --restart=always \
-        --network=cluster_network \
-        python
-    python_container_id=$(docker ps --filter "name=python_app" --format "{{.ID}}")
-    sleep 30
-
-    printf "\nO ID do container é: $python_container_id\n"
-    
-printf "\n${GREEN}Criando aplicação no container...${NC}\n"
-
-    cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
-
-printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
-
-    cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
-    echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
-    exportfs -ar
-    systemctl restart nfs-kernel-server
+## 2 - Proxy
 
 printf "\n${GREEN}Criando proxy...${NC}\n"
     
-    cd modules/proxy || return
-    master_ip=$(hostname -I | awk '{print $1}')      
+    cd modules/proxy || return     
     sed -i "/upstream all/a\        server $master_ip:80;" nginx.conf
     cp nginx.conf /var/lib/docker/volumes/proxy_volume/_data
     cp dockerfile /var/lib/docker/volumes/proxy_volume/_data
@@ -136,6 +117,41 @@ printf "\n${GREEN}Criando proxy...${NC}\n"
         sleep 30s
     
     done & 
+
+## 3 - Compartilhamento de arquivos
+
+printf "\n${GREEN}Compartilhando volume do app via NFS...${NC}\n"
+
+    echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
+    exportfs -ar
+    systemctl restart nfs-kernel-server
+
+## 4 - Aplicação
+
+printf "\n${GREEN}Copiando aplicações para o volume...${NC}\n"
+
+    cp -r modules/app/* /var/lib/docker/volumes/app_volume/_data
+
+printf "\n${GREEN}Criando container do python_app...${NC}\n"
+
+    docker run -dti --name python_app \
+        -v app_volume \
+        --restart always \
+        python
+    python_container_id=$(docker ps --filter "name=python_app" --format "{{.ID}}")
+    sleep 30
+
+    printf "\nO ID do container é: $python_container_id\n"
+    
+
+
+
+printf "\n${GREEN}Criando serviços do app...${NC}\n"
+
+    docker service create --name python_app_service \
+        --mount type=volume,src=app_volume,dst=/var/lib/python \
+        --replicas=$n_cont \
+        python
 
 printf "\n${GREEN}Criando arquivo de configuração do worker...${NC}\n"
 

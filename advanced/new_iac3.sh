@@ -34,6 +34,8 @@ NC='\033[0m'
                     printf "\n...\n"
                     read -p "Digite o nome do administrador do banco de dados: " root_name
                     printf "\n...\n"
+                    read -p "Deseja criar quantos contêineres para o serviço? " n_cont
+                    printf "\n...\n"
                     read -n 1 -p "Deseja criar produtos aleatórios no banco para testes? [y/n] " ans_a2
                     printf "\n...\n"
                         if [ $ans_a2 = "y" ]; then
@@ -73,8 +75,7 @@ NC='\033[0m'
             printf "\n...\n"
             
             if [ "$ans_b1" = "y" ]; then
-                read -p "Deseja criar quantos contêineres na máquina? " n_cont
-                printf "\n...\n"
+
 
                 question_number=3
                 continue
@@ -101,7 +102,7 @@ NC='\033[0m'
     if [ "$ans_a1" = "y" ]; then ## - Cria mysql master
 
         printf "\n${GREEN}Iniciando criação do mysql master...${NC}\n"   
-        ./modules/create_leader.sh "$db_name" "$root_name" "$root_pass" 
+        ./modules/create_leader.sh "$db_name" "$root_name" "$root_pass" "$n_cont" 
 
         if [ "$ans_a2" = "y" ]; then ## - Insere produtos aleatórios no banco de dados
             printf "\n${GREEN}Inserindo produtos aleatórios...${NC}\n"
@@ -114,7 +115,7 @@ NC='\033[0m'
 
     if [ "$ans_b1" = "y" ]; then ## - Cria mysql worker
         printf "\n${GREEN}Iniciando criação do mysql worker...${NC}\n"
-        ./modules/create_worker.sh "$n_cont"
+        ./modules/create_worker.sh
     fi
 
 ## 3 - Fim
