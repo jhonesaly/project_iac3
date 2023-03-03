@@ -28,7 +28,17 @@ Neste desafio, você deverá replicar as aulas ministradas pelo instrutor Denils
 
 ### basic
 
+Script que seguirá estritamente aquilo que foi proposto pelo desafio, com todos os arquivos necessários para realizar a configuração manual do serviço seja em VMs ou na AWS.
+
+Como treino, arquivos foram digitados exatamente como instruído pelo professor.
+
 ### advanced
+
+Nessa pasta está contido todos os arquivos para a execução avançada do projeto, que utiliza muita lógica para permitir a generalização e automatização do projeto básico para qualquer caso semelhante, permitindo maior flexibilidade e escalabilidade.
+
+Tudo isso utilizando uma estrutura modularizada que permite maior flexibilidade e mais implementações no futuro.
+
+Dentro da respectiva pasta há um outro README.md que explica detalhadamente o que cada arquivo faz.
 
 ------
 
