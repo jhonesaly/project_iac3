@@ -96,16 +96,15 @@
 
 ## 2 - Executando módulos
 
-    source master_vars.conf
-
     if [ "$ans_a1" = "y" ]; then
-
+        
         printf "\n${GREEN}Iniciando criação do leader...${NC}\n"   
         ./modules/create_leader.sh
-
+        
         if [ "$ans_a2" = "y" ]; then
             printf "\n${GREEN}Inserindo produtos aleatórios via shell...${NC}\n"
                 pip3 install pymysql
+                source master_vars.conf
                 python3 ./modules/app/rand_insert_shell.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
             
             printf "\n${GREEN}Inserindo produtos aleatórios via proxy...${NC}\n"
