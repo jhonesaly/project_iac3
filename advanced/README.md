@@ -214,4 +214,52 @@ Assim que ele entra no cluster, o 'worker inspect' do leader, que está rodando 
 
 ------
 
-## Explicando o script "rand_insert.py"
+## Explicando o script "rand_insert.py" e suas variações
+
+Os scripts direct_rand_insert.py, rand_insert_shell.py e index.py são todos variações do mesmo código. O primeiro é param diretamente inserir produtos aleatórios no banco de dados, o segundo insere durante a execução do script da criação da infraestrutura e o último insere os produtos aleatórios via HTTP request para o proxy.
+
+O último é o único não funcional por estar muito fora do escopo do projeto, mas poderá ser implementado no futuro.
+
+Para referência, será explicado o funcionamento do _shell pois é o que será executado durante a criação da infraestrutura.
+
+### rand_insert_shell.py
+
+O script é usado para gerar dados aleatórios para inserir em um banco de dados MySQL. 
+
+As bibliotecas 'os', 'random', 'sys' e 'datetime' são importadas.
+
+A função name_rand() é definida. Esta função gera um nome aleatório, combinando aleatoriamente consoantes e vogais para criar sílabas e, em seguida, capitaliza a primeira letra do nome gerado.
+
+A função date_rand() é definida. Esta função gera uma data aleatória dentro de um intervalo de datas pré-definido. A data gerada é retornada no formato YYYY-MM-DD.
+
+Os argumentos passados ao script a partir do **new_iac3.sh** são atribuídos a variáveis Python. Esses argumentos são o endereço IP do servidor MySQL mestre ('master_ip'), o nome do banco de dados ('db_name') que será usado, a senha root ('root_pass') para o servidor MySQL e o número de dados aleatórios a serem gerados ('n_rand_data').
+
+As variáveis host, user, password e database são definidas com base nos argumentos fornecidos.
+
+Uma conexão é criada ao banco de dados MySQL usando a função pymysql.connect().
+
+O loop for é executado 'n_rand_data' vezes, inserindo dados aleatórios na tabela estoque no banco de dados.
+
+Para cada iteração do loop for, um código de barras aleatório, nome aleatório, marca aleatória, preço aleatório, data de compra aleatória e data de validade aleatória são gerados usando as funções name_rand() e date_rand(). O código de barras e o preço gerados são exibidos na saída padrão para fins de teste.
+
+A string SQL para inserir os dados gerados na tabela estoque é criada na variável query.
+
+A instrução SQL é executada no banco de dados usando a função cursor.execute(query).
+
+As alterações são confirmadas no banco de dados usando conn.commit().
+
+Quando o loop for é concluído, a conexão com o banco de dados é encerrada usando conn.close().
+
+A mensagem "Novo registro com sucesso." é exibida na saída padrão.
+
+### direct_rand_insert.py
+
+A principal diferença entre esse e o anterior é que o esse verifica se a biblioteca pymysql está instalada antes de usá-la e, se não estiver, instala-a automaticamente. Isso é feito usando o módulo pkgutil para verificar se a biblioteca está disponível e o módulo subprocess para instalar a biblioteca usando o comando pip.
+
+Além disso, solicita ao usuário as informações do banco de dados, como o IP da máquina, o nome do banco de dados e a senha do usuário root.
+
+Outra diferença é que o novo código usa a sintaxe with conn.cursor() as cursor: para gerenciar o cursor do banco de dados, o que é uma prática recomendada para garantir que o cursor seja fechado automaticamente após a execução da consulta.
+
+------
+
+## 
