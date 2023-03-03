@@ -88,7 +88,7 @@ Esse é um script em Bash que executa uma série de comandos para configurar um 
 
 ### 0 - Configurações
 
-Este bloco puxa as variáveis do arquivo **master_vars.conf** que é lido para que as variáveis root_name, root_pass e db_name possam ser usadas em outras partes do script. 
+Este bloco puxa as variáveis do arquivo **master_vars.conf** que é lido para que as variáveis root_name, root_pass e db_name possam ser usadas em outras partes do script.
 
 Em seguida, são instalados alguns pacotes e imagens importantes para a execução do código.
 
@@ -136,7 +136,7 @@ O primeiro bloco de código cria a imagem nginx_ready a partir do arquivo **dock
 
 Em seguida, o comando "docker build" cria a imagem a partir do diretório corrente e a tag "nginx_ready" é atribuída.
 
-O segundo bloco de código cria o container nginx_proxy a partir da imagem criada anteriormente, usando o comando "docker run". O container é iniciado com a opção "-p" que mapeia a porta 4500 do host para a porta 4500 do container, e a opção "-v" que monta o volume "proxy_volume" no diretório "/var/lib/docker/volumes/proxy_volume/_data" dentro do container. A opção "--restart always" configura o container para reiniciar automaticamente em caso de falhas. 
+O segundo bloco de código cria o container nginx_proxy a partir da imagem criada anteriormente, usando o comando "docker run". O container é iniciado com a opção "-p" que mapeia a porta 4500 do host para a porta 4500 do container, e a opção "-v" que monta o volume "proxy_volume" no diretório "/var/lib/docker/volumes/proxy_volume/_data" dentro do container. A opção "--restart always" configura o container para reiniciar automaticamente em caso de falhas.
 
 Depois disso, o comando "sleep" aguarda 30 segundos para garantir que o container esteja funcionando corretamente.
 
@@ -224,7 +224,7 @@ Para referência, será explicado o funcionamento do _shell pois é o que será 
 
 ### rand_insert_shell.py
 
-O script é usado para gerar dados aleatórios para inserir em um banco de dados MySQL. 
+O script é usado para gerar dados aleatórios para inserir em um banco de dados MySQL.
 
 As bibliotecas 'os', 'random', 'sys' e 'datetime' são importadas.
 

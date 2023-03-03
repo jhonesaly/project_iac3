@@ -128,8 +128,65 @@ Além disso, o Locust oferece uma interface da web amigável para que os usuári
 
 ## Montando na sua máquina
 
+Leia as observações (próxima seção) antes de seguir com a montagem.
+
+Para utilizar os scripts na sua própria máquina, você pode fazer o seguinte (em 8 todos os comandos são concatenados para facilitar):
+
+0 - Logue como super usuário, isso facilitará o processo da criação da infraestrutura. Ao encerrar, saia do usuário root por questões de segurança.
+
+    sudo su
+
+1 - Vá para a raiz e, caso ainda não tenha uma pasta para receber o conteúdo, crie uma (ex: downloads)
+
+    cd /
+    mkdir downloads
+    cd downloads
+
+2 - Caso sua máquina não tenha o apt unzip, o instale por meio de:
+
+    apt-get install unzip
+
+3 - Faça o download dos arquivos necessários no GitHub:
+
+    wget https://github.com/jhonesaly/project_iac3/archive/refs/heads/main.zip
+
+4 - Descompacte o arquivo baixado.
+
+    unzip main.zip
+
+5 - Atribua a possibilidade de ler, editar e executar os arquivos na pasta extraída:
+
+    chmod -R 771 project_iac3-main
+
+6 - Tudo pronto. Se quiser configurar tudo manualmente, vá para a pasta /basic. Se quiser rodar o script avançado (porém mais fácil de implementar) Siga para a pasta /advanced e execute o shell script da pasta.
+
+    cd project_iac3-main
+    cd advanced
+    ./new_iac3.sh
+
+7 - Você pode, antes de rodar o script, configurar diretamente o arquivo de configurações. Para tal, na pasta /advanced use o seguinte comando e adicione os valores manualmente.
+
+    nano master_vars.conf
+
+8 - Comandos compilados para facilitar (basta copiar tudo, colar e executar no terminal):
+
+    cd /
+    mkdir downloads
+    cd downloads
+    apt-get install unzip
+    wget https://github.com/jhonesaly/project_iac3/archive/refs/heads/main.zip
+    unzip main.zip
+    chmod -R 771 project_iac3-main
+    cd project_iac3-main
+    cd advanced
+    ./new_iac3.sh
+
 ------
 
 ## Observações
+
+- O tutorial de montagem leva em consideração que também está sendo utilizada uma máquina Linux
+- Os scripts não foram testados em todas as distribuições Linux existentes. Recomenda-se teste em um ambiente controlado antes de utilizá-lo em produção.
+- A ideia é que o script permita que uma pessoa leiga em programação consiga criar a infraestrutura sem abrir o código, mas mesmo o script básico pode ser utilizado por um programador para criar manualmente aquilo que deseja alterando os parâmetros no código.
 
 [Voltar ao topo](#sumário)
