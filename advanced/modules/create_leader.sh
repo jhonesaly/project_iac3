@@ -132,6 +132,8 @@
         exportfs -ar
         systemctl restart nfs-kernel-server
 
+        cp master_vars.conf /shared
+
 ## 4 - Aplicação
 
     printf "\n${GREEN}Criando imagem python configurada...${NC}\n"
