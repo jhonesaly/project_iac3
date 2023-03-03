@@ -19,7 +19,7 @@
             printf "\n...\n"
                     
             if [ "$ans_a1" = "y" ]; then
-                read -n 1 -p "Deseja usar respostas 'default' para realizar testes? [y/n] " ans_at
+                read -n 1 -p "Deseja usar o arquivo master_vars.conf configurado manualmente? [y/n] " ans_at
                 printf "\n...\n"
 
                 if [ "$ans_at" = "y" ]; then

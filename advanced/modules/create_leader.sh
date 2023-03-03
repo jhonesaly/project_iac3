@@ -18,7 +18,6 @@
         apt-get install docker.io -y -qq
         apt-get install -y docker-compose -qq
         apt-get install mysql-client-core-8.0 -y -qq
-        pat-get install mysql-server -y -qq
         apt-get install -y python3 -qq
         apt-get install -y python3-pip -qq
         apt-get install nfs-server -y -qq
@@ -151,7 +150,7 @@
 
     printf "\n${GREEN}Criando serviços do app...${NC}\n"
 
-        docker service create --name python_app_service \
+        docker service create --name python_app_service -dt --init \
             --mount type=volume,src=app_volume,dst=/var/lib/python \
             --replicas=$n_cont \
             python_ready

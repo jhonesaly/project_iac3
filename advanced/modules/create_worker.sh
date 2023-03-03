@@ -17,6 +17,7 @@
         apt-get upgrade -y -qq
         apt-get install docker.io -y -qq
         apt-get install nfs-common -y -qq
+        apt-get install mysql-client-core-8.0 -y -qq
         systemctl daemon-reexec
         apt-get autoremove -y
 
