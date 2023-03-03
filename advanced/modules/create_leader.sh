@@ -119,6 +119,7 @@
                         --restart always \
                         -p 4500:4500 nginx_ready
                     last_num_workers=$num_workers
+                    printf "\n${GREEN}Finalizado.${NC}\n"
                     cd - || return
                 continue
             fi

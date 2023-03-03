@@ -108,8 +108,6 @@
             source master_vars.conf
             python3 ./modules/app/rand_insert_shell.py "$master_ip" "$db_name" "$root_pass" "$n_rand_data"
         
-        printf "\n${GREEN}Inserindo produtos aleatórios via proxy...${NC}\n"
-            curl http://localhost:4500/rand_insert_proxy.py
     fi    
     
     if [ "$ans_b1" = "y" ]; then
