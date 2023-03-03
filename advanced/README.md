@@ -10,6 +10,35 @@ O script é responsável por conduzir o usuário por um conjunto de perguntas in
 
 ------
 
+## Mapa de pastas do projeto
+
+main
+└── advanced
+    ├── master_vars.conf
+    ├── new_iac.sh
+    ├── README.md
+    └── modules
+        ├── create_leader.sh
+        ├── create_worker.sh
+        ├── app
+        │   ├── clean_docker.sh
+        │   ├── direct_rand_insert.py
+        │   ├── dockerfile
+        │   ├── index.py
+        │   ├── locust_loadtest.py
+        │   └── rand_insert_shell.py
+        ├── database
+        │   └── dbscript.sql
+        └── proxy
+            ├── dockerfile
+            └── nginx.conf
+
+/advanced/modules/app: contém todos arquivos da aplicação
+/advanced/modules/database: contém todos arquivos referentes ao banco de dados
+/advanced/modules/app: contém todos arquivos referentes ao proxy
+
+------
+
 ## Explicando o script "new_iac3.sh"
 
 Na etapa 0, são definidas algumas variáveis de cor para as mensagens que serão impressas na tela. Em seguida, uma mensagem de boas-vindas é impressa na tela com o nome do protocolo a ser executado e um link para a documentação do projeto.
@@ -182,3 +211,7 @@ Primeiro, o script copia o arquivo de variáveis de ambiente /shared/master_vars
 Por fim, ele coleta o endereço IP do novo nó worker e adiciona-o a um arquivo ip_list.conf que pode ser usado para controlar o status dos nós do cluster.
 
 Assim que ele entra no cluster, o 'worker inspect' do leader, que está rodando em segundo plano, identifica a alteração na quantidade de nós e reinicia o proxy com o novo worker.
+
+------
+
+## Explicando o script "rand_insert.py"
