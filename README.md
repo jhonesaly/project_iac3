@@ -40,6 +40,16 @@ Neste desafio, você deverá replicar as aulas ministradas pelo instrutor Denils
 
 ### AWS
 
+### NFS
+
+NFS (Network File System) é um protocolo de compartilhamento de arquivos em rede que permite que computadores em uma rede compartilhem arquivos e diretórios de forma transparente, como se estivessem acessando arquivos e diretórios locais. O NFS é um padrão aberto e foi criado pela Sun Microsystems para o sistema operacional Unix.
+
+O NFS funciona de forma similar a outros protocolos de compartilhamento de arquivos, mas com algumas diferenças importantes. Em vez de simplesmente copiar arquivos de um computador para outro, o NFS permite que um computador acesse diretamente os arquivos e diretórios em outro computador como se estivessem armazenados localmente.
+
+Isso é possível porque o NFS compartilha diretórios e arquivos por meio de um sistema de arquivos virtual. Isso significa que o computador que está acessando os arquivos não precisa saber onde eles estão fisicamente armazenados no disco rígido do computador que os compartilha. Em vez disso, o NFS simplesmente fornece um caminho virtual para acessá-los.
+
+Ao usar o NFS, é possível compartilhar arquivos e diretórios em uma rede local de forma eficiente e segura. Isso é especialmente útil em ambientes de rede com muitos computadores, como empresas e instituições de ensino, onde os usuários precisam acessar os mesmos arquivos e diretórios em vários computadores. Além disso, o NFS também é usado em ambientes de computação em cluster e computação de alta performance para compartilhar recursos e dados entre nós de processamento.
+
 ### Proxy Reverso
 
 Um proxy reverso é um servidor intermediário que recebe solicitações de clientes e encaminha essas solicitações para um ou mais servidores de origem. Diferentemente de um proxy normal, que encaminha solicitações para um cliente, um proxy reverso encaminha solicitações para um servidor, funcionando como um intermediário entre os clientes e os servidores de origem.

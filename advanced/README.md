@@ -149,3 +149,12 @@ Finalmente, o script adiciona um sleep 30 para permitir que o serviço da aplica
 
 ### 4 - Compartilhamento
 
+Essa parte dp código configura o NFS (Network File System) para compartilhar os arquivos entre diferentes máquinas.
+
+O trecho de código adiciona dois diretórios para compartilhamento de arquivos: /var/lib/docker/volumes/app_volume/_data e /shared no arquivo exports na pasta /etc.
+
+Os parâmetros *(rw,sync,subtree_check) especificam as permissões de acesso ao diretório compartilhado. Em particular, rw permite que os clientes possam ler e escrever no diretório, sync garante que as alterações sejam sincronizadas entre o cliente e o servidor em tempo real e subtree_check permite que o sistema de arquivos seja verificado recursivamente para garantir a integridade dos arquivos compartilhados.
+
+Depois, executa o comando exportfs -ar para tornar os diretórios compartilhados disponíveis para as máquinas clientes.
+
+Por fim, o comando systemctl restart nfs-kernel-server reinicia o serviço NFS no servidor para aplicar as configurações atualizadas.
