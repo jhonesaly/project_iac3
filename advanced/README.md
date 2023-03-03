@@ -277,3 +277,21 @@ Ao rodar o script, será aberta uma interface web do Locust que permitirá monit
 Para verificar o container, basta colocar a porta em que ele está conectado, para testar a rede, use a porta 4500, que foi definida como porta do proxy no script da infraestrutura.
 
 ![Locust](../images/locust.png)
+
+------
+
+## Explicando o script "clean_docker.sh"
+
+**Atenção**, esse script é potencialmente perigoso e não deve ser utilizado em ambiente de produção, somente para testes.
+
+Este script shell é usado para remover todos os recursos do Docker que foram criados anteriormente, incluindo containers, serviços, redes e imagens, e também remove o nó do cluster do Swarm.
+
+Facilita a realização de outros testes com docker sem ter que voltar para um snapshot anterior da VM.
+
+Explicação dos comandos:
+
+- docker rm -f $(docker ps -aq): este comando remove todos os containers existentes.
+- docker service rm $(docker service ls -q): este comando remove todos os serviços do Docker que estão em execução.
+- docker network rm $(docker network ls -q): este comando remove todas as redes Docker existentes.
+- docker rmi -f $(docker images -aq): este comando remove todas as imagens Docker existentes.
+- docker swarm leave --force: este comando remove o nó atual do Docker Swarm cluster. O --force é usado para forçar a saída do nó mesmo se ele ainda estiver em execução.
