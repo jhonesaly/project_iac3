@@ -137,6 +137,15 @@ O arquivo Dockerfile é usado para construir uma imagem Docker customizada com o
 
 ### 3 - Aplicação
 
+Esse trecho de código faz a construção da imagem do Docker para a aplicação em Python, configura as variáveis de ambiente necessárias para a execução da aplicação e cria um serviço no Docker Swarm.
 
+Primeiro, ele navega até o diretório modules/app e adiciona as variáveis de ambiente MASTER_IP, DB_NAME, ROOT_PASS e N_RAND_DATA ao arquivo **dockerfile**. Em seguida, ele usa o comando docker build para criar uma imagem com o nome python_ready.
+
+Depois, o script copia todos os arquivos da pasta /app para o volume da aplicação app_volume usando o comando cp -r. Em seguida, ele cria um serviço no Docker Swarm com o nome python_app_service, que é responsável por executar a aplicação em Python.
+
+O serviço é criado usando o comando docker service create, usando a imagem configurada e demais variáveis puxadas do **master_vars.conf** e especifica que deve ser montado um volume no diretório /var/lib/python dentro do contêiner para que os arquivos necessários da aplicação estejam disponíveis.
+
+Finalmente, o script adiciona um sleep 30 para permitir que o serviço da aplicação seja iniciado antes de continuar com a execução do restante do script.
 
 ### 4 - Compartilhamento
+
