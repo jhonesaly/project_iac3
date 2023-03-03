@@ -119,9 +119,12 @@
         
         done & 
 
-    printf "\n${GREEN}Criando pasta compartilhada do proxy...${NC}\n"
+    printf "\n${GREEN}Criando pasta compartilhada...${NC}\n"
         mkdir -p /shared
+        chmod 777 /shared
         printf "# Lista de IPs dos workers do cluster:\n\n" > /shared/ip_list.conf
+        chmod 777 /shared/ip_list.conf
+        cp master_vars.conf /shared
 
 ## 3 - Compartilhamento
 
@@ -131,8 +134,6 @@
         echo "/shared *(rw,sync,subtree_check)" >> /etc/exports
         exportfs -ar
         systemctl restart nfs-kernel-server
-
-        cp master_vars.conf /shared
 
 ## 4 - Aplicação
 

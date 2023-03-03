@@ -37,8 +37,10 @@
 
     printf "\n${GREEN}Adicionando nó worker ao cluster...${NC}\n" # Necessário já ter um mysql master
 
+        cp /shared/master_vars.conf ./
+        source master_vars.conf
+        
         docker swarm join --token $worker_token $master_ip:2377
         worker_ip=$(hostname -I | awk '{print $1}')
         hostname=$(hostname)
         echo "worker_ip_${hostname}=${worker_ip}" >> /shared/ip_list.conf
-
