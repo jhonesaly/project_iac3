@@ -135,16 +135,7 @@
         chmod 777 /shared/ip_list.conf
         cp master_vars.conf /shared
 
-## 3 - Compartilhamento
-
-    printf "\n${GREEN}Configurando NFS para compartilhamento de arquivos...${NC}\n"
-
-        echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
-        echo "/shared *(rw,sync,subtree_check)" >> /etc/exports
-        exportfs -ar
-        systemctl restart nfs-kernel-server
-
-## 4 - Aplicação
+## 3 - Aplicação
 
     printf "\n${GREEN}Criando imagem python configurada...${NC}\n"
 
@@ -167,3 +158,12 @@
             --replicas=$n_cont \
             python_ready
         sleep 30
+
+## 4 - Compartilhamento
+
+    printf "\n${GREEN}Configurando NFS para compartilhamento de arquivos...${NC}\n"
+
+        echo "/var/lib/docker/volumes/app_volume/_data *(rw,sync,subtree_check)" >> /etc/exports
+        echo "/shared *(rw,sync,subtree_check)" >> /etc/exports
+        exportfs -ar
+        systemctl restart nfs-kernel-server

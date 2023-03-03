@@ -24,6 +24,19 @@ Se a pergunta número 1 for respondida com "n", o script passa para a pergunta n
 
 Se o usuário responder a pergunta que preenche a variável 'ans_a1' e 'ans_b1' inadequadamente, cai em um loop que continua até que todas as perguntas sejam respondidas. Se as respostas forem "y" ou "n", o loop termina.
 
+#### master_vars.conf
+
+O arquivo .conf é um arquivo de configuração que define as variáveis utilizadas no programa. Nesse caso, as variáveis definidas no arquivo .conf são:
+
+- 'ans_a1': variável booleana que indica se deve ser criado um líder.
+- 'ans_a2': variável booleana que indica se deve ser criados dados aleatórios.
+- 'db_name': variável que define o nome do banco de dados.
+- 'root_name': variável que define o nome do administrador do banco de dados.
+- 'root_pass': variável que define a senha do administrador do banco de dados.
+- 'master_ip': variável que define o endereço IP do líder do serviço.
+- 'n_rand_data': variável que define a quantidade de dados aleatórios que serão gerados.
+- 'n_cont': variável que define o número de containers do serviço.
+
 ### Módulos
 
 A etapa 2 executa os módulos apropriados com base nas respostas do usuário. Se a resposta para a pergunta número 1 for "y", o módulo **create_leader.sh** é executado para criar um líder no cluster.
@@ -88,8 +101,42 @@ Por fim, a tabela tem uma chave primária, que é a coluna "id_codigo_barras". I
 
 ### 2 - Proxy
 
-Este bloco cria um contêiner para o proxy nginx. Primeiro, um arquivo de configuração do nginx é criado a partir do modelo e é adicionado um servidor com o IP do gerente. Em seguida, a imagem é criada e o contêiner é iniciado. Depois, é criado um loop que verifica a cada 30 segundos se há trabalhadores adicionais no cluster. Se houver, o contêiner nginx é parado e removido, o novo IP do trabalhador é obtido do arquivo ip_list.conf e o arquivo de configuração do nginx é atualizado com o novo IP. A imagem é recriada e o contêiner é iniciado novamente.
+Esse trecho de código é responsável por configurar o proxy reverso do servidor nginx para balanceamento de carga, criando um container que distribui o tráfego entre os diferentes nós (manager e workers) do cluster.
 
-### 3 - Compartilhamento
+O primeiro bloco de código cria a imagem nginx_ready a partir do arquivo **dockerfile** e do arquivo de configuração **nginx.conf**, que é modificado para incluir o IP do nó master (leader) e posteriormente copiado para o diretório /var/lib/docker/volumes/proxy_volume/_data.
 
-Este bloco configura o NFS (Network File System) para compartilhamento de arquivos entre os nós do cluster. Um diretório compartilhado é criado em /shared, as permissões são definidas e um arquivo ip_list.conf é criado para armazenar os IPs dos trabalhadores. O arquivo master_vars.conf é copiado para o diretório compartilhado. O NFS é configurado para compartilhar o volume app_volume com a opção de escrita e sincronização ativadas.
+Em seguida, o comando "docker build" cria a imagem a partir do diretório corrente e a tag "nginx_ready" é atribuída.
+
+O segundo bloco de código cria o container nginx_proxy a partir da imagem criada anteriormente, usando o comando "docker run". O container é iniciado com a opção "-p" que mapeia a porta 4500 do host para a porta 4500 do container, e a opção "-v" que monta o volume "proxy_volume" no diretório "/var/lib/docker/volumes/proxy_volume/_data" dentro do container. A opção "--restart always" configura o container para reiniciar automaticamente em caso de falhas. 
+
+Depois disso, o comando "sleep" aguarda 30 segundos para garantir que o container esteja funcionando corretamente.
+
+O terceiro bloco de código cria um loop que detecta se novos nós (workers) foram adicionados ao cluster.
+
+O comando "docker node ls" lista todos os nós do cluster e o comando "docker node inspect" obtém o status de cada nó. O número de nós com status "ready" é contado com o comando "grep -c 'ready'". Se o número de nós "ready" for diferente do número de nós detectados na iteração anterior, isso significa que um novo nó foi adicionado ao cluster.
+
+Nesse caso, o container "nginx_proxy" é parado e removido com o comando "docker stop" e "docker rm", respectivamente.
+
+O novo endereço IP do worker recém-adicionado é obtido do arquivo "/shared/ip_list.conf", que é atualizado constantemente com o endereço IP de cada nó do cluster e via NFS, que será configurado mais adiante.
+
+O arquivo de configuração **nginx.conf** é novamente modificado para incluir o novo IP, e a imagem nginx_ready é reconstruída com o comando "docker build".
+
+Um novo container "nginx_proxy" é criado com o mesmo comando "docker run" usado anteriormente, e o loop é reiniciado para detectar novas adições ao cluster.
+
+Por fim, fora do loop, o último bloco de código cria um diretório "/shared" e um arquivo **ip_list.conf** dentro dele, que armazena a lista de IPs dos nós do cluster.
+
+O arquivo **master_vars.conf** também é copiado para o diretório "/shared", pois é necessário para inserção do novo nó no cluster.
+
+#### nginx.conf e dockerfile
+
+O arquivo nginx.conf é a configuração do servidor proxy Nginx. É dividido em duas seções principais: http e events.
+
+A seção http define as configurações para o protocolo HTTP. A primeira diretiva upstream define um grupo de servidores backend que serão balanceados pelo Nginx. A diretiva server define a configuração do servidor Nginx. A diretiva listen define a porta em que o servidor Nginx irá escutar. A diretiva location define a rota que o Nginx irá manipular e o proxy_pass define o grupo de servidores backend balanceados pela diretiva upstream.
+
+O arquivo Dockerfile é usado para construir uma imagem Docker customizada com o Nginx e a configuração do nginx.conf. O FROM define a imagem base usada como ponto de partida para construir a nova imagem. A diretiva COPY copia o arquivo nginx.conf da pasta atual para a pasta /etc/nginx/ dentro da imagem.
+
+### 3 - Aplicação
+
+
+
+### 4 - Compartilhamento
