@@ -262,4 +262,18 @@ Outra diferença é que o novo código usa a sintaxe with conn.cursor() as curso
 
 ------
 
-## 
+## Explicando o script "locust_loadtest.py"
+
+Esse script utiliza a biblioteca Locust para realizar testes de carga em um banco de dados MySQL.
+
+O script começa verificando se as bibliotecas necessárias estão instaladas e, caso não estejam, as instala. Em seguida, define uma função mysql_test que realiza uma consulta SQL simples no banco de dados e retorna o resultado. Essa função será utilizada para criar a tarefa de teste em si.
+
+A classe MyUser é criada como um bot de teste (que seria um caixa do mercado), que define uma tarefa a ser executada. A tarefa é a função mysql_task, que chama a função mysql_test com parâmetros específicos e envia o resultado para o gráfico do Locust. A tarefa é definida para ser executada entre 1 e 2 segundos de espera (estimado como a máxima velocidade de um caixa operando o leitor de código de barras), simulando um comportamento de usuário real.
+
+Por fim, o script define como rodar a interface do Locust, especificando o arquivo que contém as tarefas (-f), o número de usuários virtuais (-u), a taxa de geração de usuários virtuais (-r), o tempo total de execução (-t) e o endereço do banco de dados a ser testado (--host).
+
+Ao rodar o script, será aberta uma interface web do Locust que permitirá monitorar o andamento dos testes, incluindo informações sobre número de usuários, taxa de requisições por segundo, tempo de resposta, entre outras métricas.
+
+Para verificar o container, basta colocar a porta em que ele está conectado, para testar a rede, use a porta 4500, que foi definida como porta do proxy no script da infraestrutura.
+
+![Locust](../images/locust.png)
