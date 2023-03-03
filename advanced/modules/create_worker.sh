@@ -40,5 +40,5 @@
         docker swarm join --token $worker_token $master_ip:2377
         worker_ip=$(hostname -I | awk '{print $1}')
         hostname=$(hostname)
-        echo "worker_ip_$(hostname)=${worker_ip}" >> /shared/ip_list.conf
+        echo "worker_ip_${hostname}=${worker_ip}" >> /shared/ip_list.conf
 
