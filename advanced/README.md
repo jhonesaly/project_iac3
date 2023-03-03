@@ -111,7 +111,7 @@ O segundo bloco de código cria o container nginx_proxy a partir da imagem criad
 
 Depois disso, o comando "sleep" aguarda 30 segundos para garantir que o container esteja funcionando corretamente.
 
-O terceiro bloco de código cria um loop que detecta se novos nós (workers) foram adicionados ao cluster.
+O terceiro bloco de código cria um loop (worker inspect) que detecta se novos nós (workers) foram adicionados ao cluster.
 
 O comando "docker node ls" lista todos os nós do cluster e o comando "docker node inspect" obtém o status de cada nó. O número de nós com status "ready" é contado com o comando "grep -c 'ready'". Se o número de nós "ready" for diferente do número de nós detectados na iteração anterior, isso significa que um novo nó foi adicionado ao cluster.
 
@@ -121,7 +121,7 @@ O novo endereço IP do worker recém-adicionado é obtido do arquivo "/shared/ip
 
 O arquivo de configuração **nginx.conf** é novamente modificado para incluir o novo IP, e a imagem nginx_ready é reconstruída com o comando "docker build".
 
-Um novo container "nginx_proxy" é criado com o mesmo comando "docker run" usado anteriormente, e o loop é reiniciado para detectar novas adições ao cluster.
+Um novo container "nginx_proxy" é criado com o mesmo comando "docker run" usado anteriormente, e o loop é reiniciado (e fica rodando em segundo plano) para detectar novas adições ao cluster.
 
 Por fim, fora do loop, o último bloco de código cria um diretório "/shared" e um arquivo **ip_list.conf** dentro dele, que armazena a lista de IPs dos nós do cluster.
 
@@ -158,3 +158,27 @@ Os parâmetros *(rw,sync,subtree_check) especificam as permissões de acesso ao 
 Depois, executa o comando exportfs -ar para tornar os diretórios compartilhados disponíveis para as máquinas clientes.
 
 Por fim, o comando systemctl restart nfs-kernel-server reinicia o serviço NFS no servidor para aplicar as configurações atualizadas.
+
+------
+
+## Explicando o script "create_worker.sh"
+
+Esse é um script em shell que executa uma série de ações em um servidor para adicionar um novo nó worker em um cluster Docker Swarm. Acaba sendo mais simples que os demais pois já tem muita coisa pronta, então só precisa puxar e montar.
+
+### 0 - Configurações
+
+Nesta seção, todas as variáveis citadas anteriormente são puxadas pelo **master_vars.conf** para utilização no código.
+
+Depois, os pacotes necessários são instalados no servidor. Isso inclui o Docker, o NFS, e outras dependências.
+
+### 1 - Compartilhamento
+
+Nesta seção, primeiro é criado o volume no docker para receber o conteúdo da aplicação, e então o compartilhamento NFS é configurado para que a pasta /var/lib/docker/volumes/app_volume/_data e a pasta /shared possam ser acessadas a partir do leader.
+
+### 2 - Cluster
+
+Primeiro, o script copia o arquivo de variáveis de ambiente /shared/master_vars.conf para atualizá-lo caso tenha havido alguma mudança e acessar o token para worker, em seguida, executa o comando docker swarm join para adicionar o nó worker.
+
+Por fim, ele coleta o endereço IP do novo nó worker e adiciona-o a um arquivo ip_list.conf que pode ser usado para controlar o status dos nós do cluster.
+
+Assim que ele entra no cluster, o 'worker inspect' do leader, que está rodando em segundo plano, identifica a alteração na quantidade de nós e reinicia o proxy com o novo worker.
