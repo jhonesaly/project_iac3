@@ -72,8 +72,9 @@
              docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
         }
         
-        while ! exec_mysql_command; do
+        while ! exec_mysql_command; do            
             sleep 10
+            printf "\nExecutando novamente...\n"
         done
 
 ## 2 - Proxy
