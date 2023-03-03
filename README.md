@@ -36,9 +36,35 @@ Neste desafio, você deverá replicar as aulas ministradas pelo instrutor Denils
 
 ### Docker
 
+Docker é uma plataforma de software que permite que os aplicativos sejam executados em ambientes isolados, chamados contêineres, que são uma forma de virtualização de sistema operacional que permite a criação de ambientes portáteis para execução de aplicativos.
+
+O objetivo do Docker é permitir que os desenvolvedores criem, implantem e executem aplicativos de maneira rápida e fácil, independentemente do ambiente de hospedagem.
+
+Cada contêiner é uma instância de um sistema operacional mínimo e contém apenas os componentes necessários para executar o aplicativo. Isso significa que um único host pode executar vários contêineres, cada um com sua própria versão do sistema operacional e das bibliotecas necessárias para executar o aplicativo.
+
+Docker usa imagens para criar e implantar aplicativos em contêineres. Uma imagem Docker é uma coleção de camadas que contêm instruções sobre como criar um contêiner. As imagens são criadas usando arquivos de configuração chamados Dockerfiles, que contêm uma lista de comandos a serem executados na imagem.
+
+Por tudo isso, é uma ferramenta popular para criação e implantação de aplicativos, especialmente em ambientes de nuvem. Ele permite que os desenvolvedores criem aplicativos em seus próprios computadores e, em seguida, implantem esses aplicativos em qualquer ambiente de hospedagem que suporte contêineres Docker, como Amazon Web Services, Google Cloud Platform ou Microsoft Azure. Isso torna o desenvolvimento e implantação de aplicativos mais fácil e mais rápido, reduzindo a complexidade do ambiente de hospedagem.
+
 ### Docker Swarm
 
+O Docker Swarm é uma ferramenta de orquestração de contêineres que permite criar um cluster de hosts Docker, permitindo a execução de aplicativos em um ambiente de contêiner escalável e altamente disponível. O Docker Swarm é uma solução integrada no Docker Engine e permite que vários hosts do Docker sejam agrupados em um cluster.
+
+Com o Docker Swarm, é possível definir uma série de serviços em um arquivo de composição do Docker e distribuí-los automaticamente entre os hosts do cluster. O Swarm gerencia o agendamento e o balanceamento de carga dos serviços, garantindo que eles estejam em execução em todo o cluster.
+
+O Docker Swarm usa um conjunto de APIs para permitir que os aplicativos sejam implantados em um cluster de contêineres distribuído. Ele usa o algoritmo de consenso RAFT para gerenciar o estado do cluster e garantir a tolerância a falhas. Com isso, ele pode escalar automaticamente aplicativos em resposta a picos de demanda e garantir a disponibilidade de aplicativos críticos.
+
+O Docker Swarm também oferece recursos de segurança e gerenciamento de recursos, como autenticação e autorização baseadas em certificados TLS e gerenciamento de limites de recursos para controlar o uso de CPU e memória em um ambiente compartilhado. Ele pode ser integrado com outras ferramentas de orquestração, como Kubernetes, para criar soluções de contêineres mais complexas.
+
 ### AWS
+
+AWS significa Amazon Web Services, é uma plataforma de computação em nuvem fornecida pela Amazon.com. Ela oferece um conjunto de serviços que ajudam indivíduos e empresas a armazenar, gerenciar e processar dados em uma infraestrutura remota segura e escalável.
+
+Os serviços da AWS incluem, mas não se limitam a: armazenamento em nuvem (S3), bancos de dados (RDS), computação (EC2), rede (VPC), Internet das Coisas (IoT), aprendizado de máquina (Machine Learning), análise de dados (EMR), ferramentas de desenvolvimento (CodeCommit, CodeBuild, CodePipeline), segurança e conformidade, entre outros.
+
+A AWS permite que os usuários acessem recursos computacionais em escala global, permitindo que eles desenvolvam e executem aplicativos e serviços com alta escalabilidade, disponibilidade e segurança. Esses recursos são fornecidos por meio de centros de dados distribuídos em diferentes regiões do mundo.
+
+A plataforma AWS é altamente flexível e personalizável, permitindo que os usuários selecionem os serviços necessários para suas necessidades específicas e paguem apenas pelos recursos utilizados, sem a necessidade de se preocupar com investimentos em infraestrutura e hardware próprios. Além disso, a AWS oferece suporte ao desenvolvimento e implantação de aplicativos em várias linguagens de programação e sistemas operacionais.
 
 ### NFS
 
