@@ -67,7 +67,14 @@
     printf "\n${GREEN}Aplicando o script SQL ao banco de dados...${NC}\n"
 
         cp -r modules/database/* /var/lib/docker/volumes/db_volume/_data
-        docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
+        
+        function exec_mysql_command {
+             docker exec -i $mysql_container_id sh -c "exec mysql -u root -p'$root_pass' $db_name < /var/lib/mysql/dbscript.sql"
+        }
+        
+        while ! exec_mysql_command; do
+            sleep 10
+        done
 
 ## 2 - Proxy
 

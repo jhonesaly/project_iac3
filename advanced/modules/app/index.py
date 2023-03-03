@@ -1,3 +1,9 @@
+<html>
+<head>
+    <title>Done!</title>
+</head>
+</html>
+
 import os
 import random
 from datetime import date, timedelta
