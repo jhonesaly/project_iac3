@@ -48,7 +48,7 @@ Para tal, o projeto foi imaginado como uma estrutura para supermercado, onde o h
 
 ## Definições Importantes
 
-### Docker
+## Docker
 
 Docker é uma plataforma de software que permite que os aplicativos sejam executados em ambientes isolados, chamados contêineres, que são uma forma de virtualização de sistema operacional que permite a criação de ambientes portáteis para execução de aplicativos.
 
@@ -60,7 +60,7 @@ Docker usa imagens para criar e implantar aplicativos em contêineres. Uma image
 
 Por tudo isso, é uma ferramenta popular para criação e implantação de aplicativos, especialmente em ambientes de nuvem. Ele permite que os desenvolvedores criem aplicativos em seus próprios computadores e, em seguida, implantem esses aplicativos em qualquer ambiente de hospedagem que suporte contêineres Docker, como Amazon Web Services, Google Cloud Platform ou Microsoft Azure. Isso torna o desenvolvimento e implantação de aplicativos mais fácil e mais rápido, reduzindo a complexidade do ambiente de hospedagem.
 
-### Docker Swarm
+## Docker Swarm
 
 O Docker Swarm é uma ferramenta de orquestração de contêineres que permite criar um cluster de hosts Docker, permitindo a execução de aplicativos em um ambiente de contêiner escalável e altamente disponível. O Docker Swarm é uma solução integrada no Docker Engine e permite que vários hosts do Docker sejam agrupados em um cluster.
 
@@ -70,7 +70,7 @@ O Docker Swarm usa um conjunto de APIs para permitir que os aplicativos sejam im
 
 O Docker Swarm também oferece recursos de segurança e gerenciamento de recursos, como autenticação e autorização baseadas em certificados TLS e gerenciamento de limites de recursos para controlar o uso de CPU e memória em um ambiente compartilhado. Ele pode ser integrado com outras ferramentas de orquestração, como Kubernetes, para criar soluções de contêineres mais complexas.
 
-### AWS
+## AWS
 
 AWS significa Amazon Web Services, é uma plataforma de computação em nuvem fornecida pela Amazon.com. Ela oferece um conjunto de serviços que ajudam indivíduos e empresas a armazenar, gerenciar e processar dados em uma infraestrutura remota segura e escalável.
 
@@ -80,7 +80,7 @@ A AWS permite que os usuários acessem recursos computacionais em escala global,
 
 A plataforma AWS é altamente flexível e personalizável, permitindo que os usuários selecionem os serviços necessários para suas necessidades específicas e paguem apenas pelos recursos utilizados, sem a necessidade de se preocupar com investimentos em infraestrutura e hardware próprios. Além disso, a AWS oferece suporte ao desenvolvimento e implantação de aplicativos em várias linguagens de programação e sistemas operacionais.
 
-### NFS
+## NFS
 
 NFS (Network File System) é um protocolo de compartilhamento de arquivos em rede que permite que computadores em uma rede compartilhem arquivos e diretórios de forma transparente, como se estivessem acessando arquivos e diretórios locais. O NFS é um padrão aberto e foi criado pela Sun Microsystems para o sistema operacional Unix.
 
@@ -90,7 +90,7 @@ Isso é possível porque o NFS compartilha diretórios e arquivos por meio de um
 
 Ao usar o NFS, é possível compartilhar arquivos e diretórios em uma rede local de forma eficiente e segura. Isso é especialmente útil em ambientes de rede com muitos computadores, como empresas e instituições de ensino, onde os usuários precisam acessar os mesmos arquivos e diretórios em vários computadores. Além disso, o NFS também é usado em ambientes de computação em cluster e computação de alta performance para compartilhar recursos e dados entre nós de processamento.
 
-### Proxy Reverso
+## Proxy Reverso
 
 Um proxy reverso é um servidor intermediário que recebe solicitações de clientes e encaminha essas solicitações para um ou mais servidores de origem. Diferentemente de um proxy normal, que encaminha solicitações para um cliente, um proxy reverso encaminha solicitações para um servidor, funcionando como um intermediário entre os clientes e os servidores de origem.
 
@@ -98,7 +98,7 @@ Um exemplo comum de uso de proxy reverso é o balanceamento de carga. Quando vá
 
 Em resumo, um proxy reverso é um servidor intermediário que encaminha solicitações de clientes para um ou mais servidores de origem, enquanto um servidor web pode ser configurado como um proxy reverso para melhorar o desempenho e a escalabilidade de um site. O uso de um proxy reverso pode ajudar a distribuir a carga entre vários servidores e fornecer serviços adicionais, como autenticação, balanceamento de carga e caching.
 
-### NGINX
+## NGINX
 
 O Nginx (pronuncia-se "engine-x") é um servidor web de código aberto que pode ser usado como um servidor proxy reverso, balanceador de carga, servidor de correio eletrônico e servidor de streaming de mídia. Ele foi criado por Igor Sysoev em 2002 com o objetivo de resolver problemas de escalabilidade do Apache em um ambiente de alta carga.
 
@@ -106,7 +106,7 @@ Uma das principais características do Nginx é sua capacidade de lidar com muit
 
 Além disso, o Nginx tem uma arquitetura modular, permitindo que os usuários adicionem funcionalidades adicionais através de módulos externos. Ele também tem uma configuração simples e flexível, permitindo que os administradores de sistema personalizem facilmente a configuração do servidor de acordo com suas necessidades específicas.
 
-### Load test (Teste de carga)
+## Load test (Teste de carga)
 
 Um load test (teste de carga, em português) é um tipo de teste de software que visa avaliar a capacidade de um sistema ou aplicação para lidar com cargas de trabalho específicas. O objetivo é medir a capacidade de resposta e o desempenho do sistema ou aplicação sob uma carga de trabalho simulada e, em seguida, identificar os gargalos e limitações do sistema.
 
@@ -116,7 +116,7 @@ Os resultados do load test geralmente incluem métricas como tempo de resposta, 
 
 Os load tests podem ser realizados manualmente ou com ferramentas automatizadas, como o Locust, que é usado no script mencionado anteriormente. Essas ferramentas permitem que os usuários definam uma carga de trabalho específica para simular, a fim de avaliar a capacidade do sistema ou aplicação em questão.
 
-### Locust
+## Locust
 
 Locust é uma ferramenta de teste de carga de software de código aberto, escrita em Python. Ele permite que os desenvolvedores criem e executem testes de carga para medir a capacidade de um sistema para lidar com uma carga simulada de usuários. O Locust é capaz de gerar um grande número de usuários simulados em uma máquina para testar o desempenho de um sistema em diferentes cenários de carga.
 

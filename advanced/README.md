@@ -10,36 +10,19 @@ O script é responsável por conduzir o usuário por um conjunto de perguntas in
 
 ------
 
-## Mapa de pastas do projeto
+## Mapa de pastas e arquivos do projeto avançado
 
-main
-└── advanced
-    ├── master_vars.conf
-    ├── new_iac.sh
-    ├── README.md
-    └── modules
-        ├── create_leader.sh
-        ├── create_worker.sh
-        ├── app
-        │   ├── clean_docker.sh
-        │   ├── direct_rand_insert.py
-        │   ├── dockerfile
-        │   ├── index.py
-        │   ├── locust_loadtest.py
-        │   └── rand_insert_shell.py
-        ├── database
-        │   └── dbscript.sql
-        └── proxy
-            ├── dockerfile
-            └── nginx.conf
+![Path Map](../images/pathmap.png)
 
-/advanced/modules/app: contém todos arquivos da aplicação
-/advanced/modules/database: contém todos arquivos referentes ao banco de dados
-/advanced/modules/app: contém todos arquivos referentes ao proxy
+modules/app: contém todos arquivos da aplicação
+modules/database: contém todos arquivos referentes ao banco de dados
+modules/app: contém todos arquivos referentes ao proxy
 
 ------
 
 ## Explicando o script "new_iac3.sh"
+
+Este é um script shell que ajuda a configurar e executar um cluster de contêineres usando o Docker para simular o ambiente de um mercado.
 
 Na etapa 0, são definidas algumas variáveis de cor para as mensagens que serão impressas na tela. Em seguida, uma mensagem de boas-vindas é impressa na tela com o nome do protocolo a ser executado e um link para a documentação do projeto.
 
@@ -84,7 +67,7 @@ A seguir, serão explicados os scripts dos módulos.
 
 ## Explicando o script "create_leader.sh"
 
-Esse é um script em Bash que executa uma série de comandos para configurar um cluster de Docker para uma aplicação web e seu respectivo manager.
+Esse é um script em Shell que executa uma série de comandos para configurar um cluster de Docker para uma aplicação web e seu respectivo manager.
 
 ### 0 - Configurações
 
