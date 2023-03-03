@@ -40,6 +40,10 @@ Tudo isso utilizando uma estrutura modularizada que permite maior flexibilidade 
 
 Dentro da respectiva pasta há um outro README.md que explica detalhadamente o que cada arquivo faz.
 
+Para tal, o projeto foi imaginado como uma estrutura para supermercado, onde o há um banco de dados que contém os produtos, seus códigos de barras como chave e seu respectivo preço. Cada caixa opera com um contêiner do serviço e quando 'bipa' um produto, faz a requisição que adquire seu preço.
+
+![Caixa](./images/caixa.jpg)
+
 ------
 
 ## Definições Importantes
@@ -93,6 +97,32 @@ Um proxy reverso é um servidor intermediário que recebe solicitações de clie
 Um exemplo comum de uso de proxy reverso é o balanceamento de carga. Quando vários servidores web são executados em um cluster, um proxy reverso pode distribuir as solicitações entre os servidores para garantir que a carga seja equilibrada e que cada servidor receba uma carga razoável.
 
 Em resumo, um proxy reverso é um servidor intermediário que encaminha solicitações de clientes para um ou mais servidores de origem, enquanto um servidor web pode ser configurado como um proxy reverso para melhorar o desempenho e a escalabilidade de um site. O uso de um proxy reverso pode ajudar a distribuir a carga entre vários servidores e fornecer serviços adicionais, como autenticação, balanceamento de carga e caching.
+
+### NGINX
+
+O Nginx (pronuncia-se "engine-x") é um servidor web de código aberto que pode ser usado como um servidor proxy reverso, balanceador de carga, servidor de correio eletrônico e servidor de streaming de mídia. Ele foi criado por Igor Sysoev em 2002 com o objetivo de resolver problemas de escalabilidade do Apache em um ambiente de alta carga.
+
+Uma das principais características do Nginx é sua capacidade de lidar com muitas conexões simultâneas, tornando-o uma escolha popular para sites de alta demanda. Ele é capaz de lidar com milhares de conexões simultâneas com baixo consumo de recursos do sistema.
+
+Além disso, o Nginx tem uma arquitetura modular, permitindo que os usuários adicionem funcionalidades adicionais através de módulos externos. Ele também tem uma configuração simples e flexível, permitindo que os administradores de sistema personalizem facilmente a configuração do servidor de acordo com suas necessidades específicas.
+
+### Load test (Teste de carga)
+
+Um load test (teste de carga, em português) é um tipo de teste de software que visa avaliar a capacidade de um sistema ou aplicação para lidar com cargas de trabalho específicas. O objetivo é medir a capacidade de resposta e o desempenho do sistema ou aplicação sob uma carga de trabalho simulada e, em seguida, identificar os gargalos e limitações do sistema.
+
+Um load test pode ajudar a identificar problemas relacionados a capacidade de recursos, como memória, CPU, largura de banda, I/O de disco e conexões de rede, bem como gargalos de software, como problemas de concorrência e problemas de escalabilidade.
+
+Os resultados do load test geralmente incluem métricas como tempo de resposta, taxa de transferência, utilização de recursos do sistema, tempos de espera, erros e outros. Essas métricas podem ser usadas para identificar problemas de desempenho, bem como para otimizar e ajustar o sistema para melhorar o desempenho.
+
+Os load tests podem ser realizados manualmente ou com ferramentas automatizadas, como o Locust, que é usado no script mencionado anteriormente. Essas ferramentas permitem que os usuários definam uma carga de trabalho específica para simular, a fim de avaliar a capacidade do sistema ou aplicação em questão.
+
+### Locust
+
+Locust é uma ferramenta de teste de carga de software de código aberto, escrita em Python. Ele permite que os desenvolvedores criem e executem testes de carga para medir a capacidade de um sistema para lidar com uma carga simulada de usuários. O Locust é capaz de gerar um grande número de usuários simulados em uma máquina para testar o desempenho de um sistema em diferentes cenários de carga.
+
+Os testes de carga podem ser personalizados usando o Locust, o que significa que os usuários podem criar cenários de teste personalizados para simular diferentes condições de uso, tipos de usuários e comportamentos. O Locust suporta vários protocolos, incluindo HTTP, HTTPS, WebSockets e mais, permitindo testar aplicativos da web, API's e sistemas em geral.
+
+Além disso, o Locust oferece uma interface da web amigável para que os usuários possam monitorar o desempenho do sistema em tempo real durante o teste. A interface do usuário permite que os usuários visualizem métricas importantes, como o tempo de resposta, o número de solicitações bem-sucedidas e malsucedidas, a taxa de transferência e muito mais. Isso permite que os usuários detectem gargalos e outros problemas de desempenho enquanto os testes estão sendo executados.
 
 ------
 
