@@ -20,27 +20,25 @@ Utilização Prática do Docker no Cenário de Microsserviços
 
 ## Objetivos do Projeto
 
-Neste desafio, você deverá replicar as aulas ministradas pelo instrutor Denilson Bonatti, criando um repositório próprio e, nesse contexto, conheça o Docker, implemente uma estrutura de Microsserviços com as melhores práticas do mercado internacional e ganhe independência entre aplicações e infraestrutura.
+Neste desafio, serão replicadas as aulas ministradas pelo instrutor Denilson Bonatti, criando um repositório próprio e, nesse contexto, conheçer o Docker, implementar uma estrutura de Microsserviços, com as melhores práticas do mercado internacional, e ganhar independência entre aplicações e infraestrutura.
 
 ------
 
 ## Organização do repositório
 
-### basic
+### **Projeto Básico**
 
-Script que seguirá estritamente aquilo que foi proposto pelo desafio, com todos os arquivos necessários para realizar a configuração manual do serviço seja em VMs ou na AWS.
+Na pasta /basic estão os script que seguirão estritamente aquilo que foi proposto pelo desafio, com todos os arquivos necessários para realizar a configuração manual do serviço seja em VMs ou na AWS.
 
 Como treino, arquivos foram digitados exatamente como instruído pelo professor.
 
-### advanced
+### **Projeto Avançado**
 
-Nessa pasta está contido todos os arquivos para a execução avançada do projeto, que utiliza muita lógica para permitir a generalização e automatização do projeto básico para qualquer caso semelhante, permitindo maior flexibilidade e escalabilidade.
-
-Tudo isso utilizando uma estrutura modularizada que permite maior flexibilidade e mais implementações no futuro.
+Na pasta /advanced está contido todos os arquivos para a execução avançada do projeto, que utiliza muita lógica para permitir a generalização e automatização do projeto básico para qualquer caso semelhante, e uma estrutura modularizada, permitindo maior flexibilidade, escalabilidade e outras implementações no futuro.
 
 Dentro da respectiva pasta há um outro README.md que explica detalhadamente o que cada arquivo faz.
 
-Para tal, o projeto foi imaginado como uma estrutura para supermercado, onde o há um banco de dados que contém os produtos, seus códigos de barras como chave e seu respectivo preço. Cada caixa opera com um contêiner do serviço e quando 'bipa' um produto, faz a requisição que adquire seu preço.
+Para tal, o projeto foi imaginado como uma estrutura para mercado, do saudoso Toshiro Shibakita, grande comercial da zona nobre de Jabuticabal-SP, onde o há um banco de dados que contém os produtos, seus códigos de barras como chave e seu respectivo preço. Cada caixa opera com um contêiner do serviço e quando 'bipa' um produto, faz a requisição que adquire seu preço.
 
 ![Caixa](./images/caixa.jpg)
 
@@ -48,39 +46,53 @@ Para tal, o projeto foi imaginado como uma estrutura para supermercado, onde o h
 
 ## Definições Importantes
 
-## Docker
+### **Contêiners e Docker**
 
-Docker é uma plataforma de software que permite que os aplicativos sejam executados em ambientes isolados, chamados contêineres, que são uma forma de virtualização de sistema operacional que permite a criação de ambientes portáteis para execução de aplicativos.
+![Docker](./images/docker.png)
 
-O objetivo do Docker é permitir que os desenvolvedores criem, implantem e executem aplicativos de maneira rápida e fácil, independentemente do ambiente de hospedagem.
+Os contêineres para aplicações são uma forma de virtualização de sistema operacional que permite a criação de ambientes portáteis para execução de aplicativos. Eles fornecem uma maneira de isolar e executar aplicativos de maneira consistente e confiável em diferentes ambientes de hospedagem, independentemente do sistema operacional ou configuração do host.
 
-Cada contêiner é uma instância de um sistema operacional mínimo e contém apenas os componentes necessários para executar o aplicativo. Isso significa que um único host pode executar vários contêineres, cada um com sua própria versão do sistema operacional e das bibliotecas necessárias para executar o aplicativo.
+O Docker é uma plataforma de software que usa contêineres para executar aplicativos de forma isolada e portátil. Ele permite que os desenvolvedores criem, implantem e executem aplicativos de maneira rápida e fácil, independentemente do ambiente de hospedagem.
 
-Docker usa imagens para criar e implantar aplicativos em contêineres. Uma imagem Docker é uma coleção de camadas que contêm instruções sobre como criar um contêiner. As imagens são criadas usando arquivos de configuração chamados Dockerfiles, que contêm uma lista de comandos a serem executados na imagem.
+Com o Docker, os desenvolvedores podem criar imagens que contêm todas as dependências necessárias para executar um aplicativo. Essas imagens podem ser facilmente distribuídas e implantadas em qualquer ambiente de hospedagem que suporte contêineres Docker, tornando o processo de desenvolvimento e implantação mais fácil e rápido.
 
-Por tudo isso, é uma ferramenta popular para criação e implantação de aplicativos, especialmente em ambientes de nuvem. Ele permite que os desenvolvedores criem aplicativos em seus próprios computadores e, em seguida, implantem esses aplicativos em qualquer ambiente de hospedagem que suporte contêineres Docker, como Amazon Web Services, Google Cloud Platform ou Microsoft Azure. Isso torna o desenvolvimento e implantação de aplicativos mais fácil e mais rápido, reduzindo a complexidade do ambiente de hospedagem.
+As imagens Docker são criadas usando arquivos de configuração chamados Dockerfiles, que contêm instruções sobre como criar um contêiner. Cada contêiner é uma instância de um sistema operacional mínimo e contém apenas os componentes necessários para executar o aplicativo.
 
-## Docker Swarm
+Dessa forma, o Docker permite que os desenvolvedores se concentrem na criação de aplicativos, sem se preocuparem com a complexidade do ambiente de hospedagem. Ele é uma ferramenta popular para criação e implantação de aplicativos, especialmente em ambientes de nuvem, como Amazon Web Services, Google Cloud Platform ou Microsoft Azure.
 
-O Docker Swarm é uma ferramenta de orquestração de contêineres que permite criar um cluster de hosts Docker, permitindo a execução de aplicativos em um ambiente de contêiner escalável e altamente disponível. O Docker Swarm é uma solução integrada no Docker Engine e permite que vários hosts do Docker sejam agrupados em um cluster.
+------
 
-Com o Docker Swarm, é possível definir uma série de serviços em um arquivo de composição do Docker e distribuí-los automaticamente entre os hosts do cluster. O Swarm gerencia o agendamento e o balanceamento de carga dos serviços, garantindo que eles estejam em execução em todo o cluster.
+### **Orquestração de contêineres e Docker Swarm**
 
-O Docker Swarm usa um conjunto de APIs para permitir que os aplicativos sejam implantados em um cluster de contêineres distribuído. Ele usa o algoritmo de consenso RAFT para gerenciar o estado do cluster e garantir a tolerância a falhas. Com isso, ele pode escalar automaticamente aplicativos em resposta a picos de demanda e garantir a disponibilidade de aplicativos críticos.
+![Docker Swam](./images/dockerswarm.png)
 
-O Docker Swarm também oferece recursos de segurança e gerenciamento de recursos, como autenticação e autorização baseadas em certificados TLS e gerenciamento de limites de recursos para controlar o uso de CPU e memória em um ambiente compartilhado. Ele pode ser integrado com outras ferramentas de orquestração, como Kubernetes, para criar soluções de contêineres mais complexas.
+A orquestração de contêineres é a capacidade de gerenciar, implantar e dimensionar automaticamente um grande número de contêineres em um ambiente de contêiner distribuído. Isso envolve o gerenciamento do ciclo de vida de cada contêiner, desde a criação até a implantação e destruição, e a alocação de recursos, como CPU, memória e armazenamento.
 
-## AWS
+O Docker Swarm é uma ferramenta de orquestração de contêineres que permite criar um cluster de hosts Docker, permitindo a execução de aplicativos em um ambiente de contêiner escalável e altamente disponível. Com o Docker Swarm, é possível definir uma série de serviços em um arquivo de composição do Docker e distribuí-los automaticamente entre os hosts do cluster, gerenciando o agendamento e o balanceamento de carga dos serviços.
+
+O Docker Swarm usa um algoritmo de consenso RAFT para gerenciar o estado do cluster e garantir a tolerância a falhas. Ele pode escalar automaticamente aplicativos em resposta a picos de demanda e garantir a disponibilidade de aplicativos críticos. Além disso, ele oferece recursos de segurança e gerenciamento de recursos, como autenticação e autorização baseadas em certificados TLS e gerenciamento de limites de recursos para controlar o uso de CPU e memória em um ambiente compartilhado.
+
+Com esses recursos, o Docker Swarm é uma ferramenta poderosa para implantar e gerenciar aplicativos em ambientes de contêiner distribuído. Ele pode ser integrado com outras ferramentas de orquestração, como Kubernetes, para criar soluções de contêineres mais complexas e escaláveis.
+
+------
+
+### **Nuvem pública e AWS**
+
+![AWS](./images/AWS.png)
+
+A nuvem pública é um modelo de computação em nuvem em que os recursos computacionais são fornecidos por provedores de serviços de nuvem terceirizados, como a AWS, em vez de serem gerenciados internamente por uma organização. Os serviços em nuvem pública são geralmente fornecidos por meio da Internet e oferecem recursos sob demanda, como armazenamento, processamento e rede, para usuários em todo o mundo.
 
 AWS significa Amazon Web Services, é uma plataforma de computação em nuvem fornecida pela Amazon.com. Ela oferece um conjunto de serviços que ajudam indivíduos e empresas a armazenar, gerenciar e processar dados em uma infraestrutura remota segura e escalável.
 
 Os serviços da AWS incluem, mas não se limitam a: armazenamento em nuvem (S3), bancos de dados (RDS), computação (EC2), rede (VPC), Internet das Coisas (IoT), aprendizado de máquina (Machine Learning), análise de dados (EMR), ferramentas de desenvolvimento (CodeCommit, CodeBuild, CodePipeline), segurança e conformidade, entre outros.
 
-A AWS permite que os usuários acessem recursos computacionais em escala global, permitindo que eles desenvolvam e executem aplicativos e serviços com alta escalabilidade, disponibilidade e segurança. Esses recursos são fornecidos por meio de centros de dados distribuídos em diferentes regiões do mundo.
-
 A plataforma AWS é altamente flexível e personalizável, permitindo que os usuários selecionem os serviços necessários para suas necessidades específicas e paguem apenas pelos recursos utilizados, sem a necessidade de se preocupar com investimentos em infraestrutura e hardware próprios. Além disso, a AWS oferece suporte ao desenvolvimento e implantação de aplicativos em várias linguagens de programação e sistemas operacionais.
 
-## NFS
+------
+
+### **NFS**
+
+![NFS](./images/nfs.png)
 
 NFS (Network File System) é um protocolo de compartilhamento de arquivos em rede que permite que computadores em uma rede compartilhem arquivos e diretórios de forma transparente, como se estivessem acessando arquivos e diretórios locais. O NFS é um padrão aberto e foi criado pela Sun Microsystems para o sistema operacional Unix.
 
@@ -90,15 +102,17 @@ Isso é possível porque o NFS compartilha diretórios e arquivos por meio de um
 
 Ao usar o NFS, é possível compartilhar arquivos e diretórios em uma rede local de forma eficiente e segura. Isso é especialmente útil em ambientes de rede com muitos computadores, como empresas e instituições de ensino, onde os usuários precisam acessar os mesmos arquivos e diretórios em vários computadores. Além disso, o NFS também é usado em ambientes de computação em cluster e computação de alta performance para compartilhar recursos e dados entre nós de processamento.
 
-## Proxy Reverso
+------
+
+### **Proxy Reverso e NGINX**
+
+![Reverse Proxy](./images/reverse-proxy.jpg)
 
 Um proxy reverso é um servidor intermediário que recebe solicitações de clientes e encaminha essas solicitações para um ou mais servidores de origem. Diferentemente de um proxy normal, que encaminha solicitações para um cliente, um proxy reverso encaminha solicitações para um servidor, funcionando como um intermediário entre os clientes e os servidores de origem.
 
-Um exemplo comum de uso de proxy reverso é o balanceamento de carga. Quando vários servidores web são executados em um cluster, um proxy reverso pode distribuir as solicitações entre os servidores para garantir que a carga seja equilibrada e que cada servidor receba uma carga razoável.
+O uso de um proxy reverso pode ajudar a distribuir a carga entre vários servidores e fornecer serviços adicionais, como autenticação, balanceamento de carga e caching.
 
-Em resumo, um proxy reverso é um servidor intermediário que encaminha solicitações de clientes para um ou mais servidores de origem, enquanto um servidor web pode ser configurado como um proxy reverso para melhorar o desempenho e a escalabilidade de um site. O uso de um proxy reverso pode ajudar a distribuir a carga entre vários servidores e fornecer serviços adicionais, como autenticação, balanceamento de carga e caching.
-
-## NGINX
+![NGINX](./images/nginx.png)
 
 O Nginx (pronuncia-se "engine-x") é um servidor web de código aberto que pode ser usado como um servidor proxy reverso, balanceador de carga, servidor de correio eletrônico e servidor de streaming de mídia. Ele foi criado por Igor Sysoev em 2002 com o objetivo de resolver problemas de escalabilidade do Apache em um ambiente de alta carga.
 
@@ -106,7 +120,11 @@ Uma das principais características do Nginx é sua capacidade de lidar com muit
 
 Além disso, o Nginx tem uma arquitetura modular, permitindo que os usuários adicionem funcionalidades adicionais através de módulos externos. Ele também tem uma configuração simples e flexível, permitindo que os administradores de sistema personalizem facilmente a configuração do servidor de acordo com suas necessidades específicas.
 
-## Load test (Teste de carga)
+------
+
+### **Load test (Teste de carga)**
+
+![Load Test](./images/loadtest.jpeg)
 
 Um load test (teste de carga, em português) é um tipo de teste de software que visa avaliar a capacidade de um sistema ou aplicação para lidar com cargas de trabalho específicas. O objetivo é medir a capacidade de resposta e o desempenho do sistema ou aplicação sob uma carga de trabalho simulada e, em seguida, identificar os gargalos e limitações do sistema.
 
@@ -116,7 +134,11 @@ Os resultados do load test geralmente incluem métricas como tempo de resposta, 
 
 Os load tests podem ser realizados manualmente ou com ferramentas automatizadas, como o Locust, que é usado no script mencionado anteriormente. Essas ferramentas permitem que os usuários definam uma carga de trabalho específica para simular, a fim de avaliar a capacidade do sistema ou aplicação em questão.
 
-## Locust
+------
+
+### **Locust**
+
+![Locust](./images/locustlogo.jpeg)
 
 Locust é uma ferramenta de teste de carga de software de código aberto, escrita em Python. Ele permite que os desenvolvedores criem e executem testes de carga para medir a capacidade de um sistema para lidar com uma carga simulada de usuários. O Locust é capaz de gerar um grande número de usuários simulados em uma máquina para testar o desempenho de um sistema em diferentes cenários de carga.
 
