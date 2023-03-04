@@ -2,15 +2,13 @@
 
 ## Sumário
 
-- [Proposta do Projeto](##Proposta-do-Projeto)
-    - [Objetivos do Projeto](###Objetivos-do-Projeto)
-    - [Requerimentos do Projeto](###Requerimentos-do-Projeto)
-- [Organização do Repositório](##organização-do-repositório)
-    - [basic](####basic)
-    - [advanced](####advanced)
-- [Definições Importantes](##Definições-Importantes)
-- [Montando na sua máquina](##Montando-na-sua-Máquina)
-- [Observações](##Observações)
+- [Resumo do Projeto](#resumo-do-projeto)
+- [Organização do Repositório](#organização-do-repositório)
+    - [Projeto Básico](#projeto-básico)
+    - [Projeto Avançado](#projeto-avançado)
+- [Definições Importantes](#definições-importantes)
+- [Montando na sua máquina](#montando-na-sua-máquina)
+- [Observações](#observações)
 
 ------
 
