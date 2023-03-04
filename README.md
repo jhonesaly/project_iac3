@@ -14,13 +14,9 @@
 
 ------
 
-## Proposta do Projeto
+## Resumo do Projeto
 
-Utilização Prática do Docker no Cenário de Microsserviços
-
-## Objetivos do Projeto
-
-Neste desafio, serão replicadas as aulas ministradas pelo instrutor Denilson Bonatti, criando um repositório próprio e, nesse contexto, conheçer o Docker, implementar uma estrutura de Microsserviços, com as melhores práticas do mercado internacional, e ganhar independência entre aplicações e infraestrutura.
+Neste desafio foram replicadas as aulas ministradas pelo instrutor Denilson Bonatti, criando um repositório próprio, utilizado o Docker e o Docker swarm para implementação de uma estrutura de Microsserviços com banco de dados MySQL, aplicações em Python, proxy reverso nginx e teste de carga com Locust. Tudo feito e testado em Linux, e shell script, que é o objetivo do bootcamp.
 
 ------
 
