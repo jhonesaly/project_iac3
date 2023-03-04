@@ -66,8 +66,6 @@ Dessa forma, o Docker permite que os desenvolvedores se concentrem na criação 
 
 ### **Orquestração de contêineres e Docker Swarm**
 
-
-
 A orquestração de contêineres é a capacidade de gerenciar, implantar e dimensionar automaticamente um grande número de contêineres em um ambiente de contêiner distribuído. Isso envolve o gerenciamento do ciclo de vida de cada contêiner, desde a criação até a implantação e destruição, e a alocação de recursos, como CPU, memória e armazenamento.
 
 ![Orquestração de Contêineres](images/orquestracaocluster.png)
