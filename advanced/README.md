@@ -26,7 +26,7 @@ Este é um script shell que ajuda a configurar e executar um cluster de contêin
 
 Na etapa 0, são definidas algumas variáveis de cor para as mensagens que serão impressas na tela. Em seguida, uma mensagem de boas-vindas é impressa na tela com o nome do protocolo a ser executado e um link para a documentação do projeto.
 
-### Configuração
+### **Configuração**
 
 Na etapa 1, o script faz algumas perguntas ao usuário para configurar o cluster. O número da pergunta é armazenado na variável 'question_number'.
 
@@ -36,7 +36,11 @@ Se a pergunta número 1 for respondida com "n", o script passa para a pergunta n
 
 Se o usuário responder a pergunta que preenche a variável 'ans_a1' e 'ans_b1' inadequadamente, cai em um loop que continua até que todas as perguntas sejam respondidas. Se as respostas forem "y" ou "n", o loop termina.
 
-#### master_vars.conf
+------
+
+#### **master_vars.conf**
+
+------
 
 O arquivo .conf é um arquivo de configuração que define as variáveis utilizadas no programa. Nesse caso, as variáveis definidas no arquivo .conf são:
 
@@ -49,7 +53,7 @@ O arquivo .conf é um arquivo de configuração que define as variáveis utiliza
 - 'n_rand_data': variável que define a quantidade de dados aleatórios que serão gerados.
 - 'n_cont': variável que define o número de containers do serviço.
 
-### Módulos
+### **Módulos**
 
 A etapa 2 executa os módulos apropriados com base nas respostas do usuário. Se a resposta para a pergunta número 1 for "y", o módulo **create_leader.sh** é executado para criar um líder no cluster.
 
@@ -69,7 +73,7 @@ A seguir, serão explicados os scripts dos módulos.
 
 Esse é um script em Shell que executa uma série de comandos para configurar um cluster de Docker para uma aplicação web e seu respectivo manager.
 
-### 0 - Configurações
+### **0 - Configurações**
 
 Este bloco puxa as variáveis do arquivo **master_vars.conf** que é lido para que as variáveis root_name, root_pass e db_name possam ser usadas em outras partes do script.
 
@@ -79,7 +83,7 @@ Depois, é criado um volume para o banco de dados, um para a aplicação e outro
 
 Por fim, é iniciado o Docker Swarm e são criados tokens de worker e manager, que são adicionados no arquivo **master_vars.conf** para que possam ser usados em outras máquinas e adicionadas ao cluster.
 
-### 1 - Banco de dados
+### **1 - Banco de dados**
 
 Este bloco cria um contêiner para o banco de dados MySQL e executa um script SQL nele e guarda o ID do contêiner MySQL na variável 'mysql_container_id'.
 
@@ -93,7 +97,11 @@ A função foi criada pois, muitas vezes, ao rodar o script, aparece o seguinte 
 
 Mas, em geral, basta reexecutar o comando para que funcione.
 
-#### dbscript.sql
+------
+
+#### **dbscript.sql**
+
+------
 
 O script SQL cria uma tabela chamada "estoque". A tabela tem seis colunas: "id_codigo_barras", "nome", "marca", "preco", "data_compra" e "data_validade".
 
@@ -111,7 +119,7 @@ A sexta coluna "data_validade" é definida como um tipo de dados DATE e também 
 
 Por fim, a tabela tem uma chave primária, que é a coluna "id_codigo_barras". Isso garante que cada registro na tabela tenha um valor exclusivo para essa coluna.
 
-### 2 - Proxy
+### **2 - Proxy**
 
 Esse trecho de código é responsável por configurar o proxy reverso do servidor nginx para balanceamento de carga, criando um container que distribui o tráfego entre os diferentes nós (manager e workers) do cluster.
 
@@ -139,7 +147,11 @@ Por fim, fora do loop, o último bloco de código cria um diretório "/shared" e
 
 O arquivo **master_vars.conf** também é copiado para o diretório "/shared", pois é necessário para inserção do novo nó no cluster.
 
+------
+
 #### nginx.conf e dockerfile
+
+------
 
 O arquivo nginx.conf é a configuração do servidor proxy Nginx. É dividido em duas seções principais: http e events.
 
@@ -147,7 +159,7 @@ A seção http define as configurações para o protocolo HTTP. A primeira diret
 
 O arquivo Dockerfile é usado para construir uma imagem Docker customizada com o Nginx e a configuração do nginx.conf. O FROM define a imagem base usada como ponto de partida para construir a nova imagem. A diretiva COPY copia o arquivo nginx.conf da pasta atual para a pasta /etc/nginx/ dentro da imagem.
 
-### 3 - Aplicação
+### **3 - Aplicação**
 
 Esse trecho de código faz a construção da imagem do Docker para a aplicação em Python, configura as variáveis de ambiente necessárias para a execução da aplicação e cria um serviço no Docker Swarm.
 
@@ -159,7 +171,7 @@ O serviço é criado usando o comando docker service create, usando a imagem con
 
 Finalmente, o script adiciona um sleep 30 para permitir que o serviço da aplicação seja iniciado antes de continuar com a execução do restante do script.
 
-### 4 - Compartilhamento
+### **4 - Compartilhamento**
 
 Essa parte dp código configura o NFS (Network File System) para compartilhar os arquivos entre diferentes máquinas.
 
@@ -177,17 +189,17 @@ Por fim, o comando systemctl restart nfs-kernel-server reinicia o serviço NFS n
 
 Esse é um script em shell que executa uma série de ações em um servidor para adicionar um novo nó worker em um cluster Docker Swarm. Acaba sendo mais simples que os demais pois já tem muita coisa pronta, então só precisa puxar e montar.
 
-### 0 - Configurações
+### **0 - Configurações**
 
 Nesta seção, todas as variáveis citadas anteriormente são puxadas pelo **master_vars.conf** para utilização no código.
 
 Depois, os pacotes necessários são instalados no servidor. Isso inclui o Docker, o NFS, e outras dependências.
 
-### 1 - Compartilhamento
+### **1 - Compartilhamento**
 
 Nesta seção, primeiro é criado o volume no docker para receber o conteúdo da aplicação, e então o compartilhamento NFS é configurado para que a pasta /var/lib/docker/volumes/app_volume/_data e a pasta /shared possam ser acessadas a partir do leader.
 
-### 2 - Cluster
+### **2 - Cluster**
 
 Primeiro, o script copia o arquivo de variáveis de ambiente /shared/master_vars.conf para atualizá-lo caso tenha havido alguma mudança e acessar o token para worker, em seguida, executa o comando docker swarm join para adicionar o nó worker.
 
@@ -205,7 +217,7 @@ O último é o único não funcional por estar muito fora do escopo do projeto, 
 
 Para referência, será explicado o funcionamento do _shell pois é o que será executado durante a criação da infraestrutura.
 
-### rand_insert_shell.py
+### **rand_insert_shell.py**
 
 O script é usado para gerar dados aleatórios para inserir em um banco de dados MySQL.
 
@@ -235,7 +247,11 @@ Quando o loop for é concluído, a conexão com o banco de dados é encerrada us
 
 A mensagem "Novo registro com sucesso." é exibida na saída padrão.
 
+------
+
 ### direct_rand_insert.py
+
+------
 
 A principal diferença entre esse e o anterior é que o esse verifica se a biblioteca pymysql está instalada antes de usá-la e, se não estiver, instala-a automaticamente. Isso é feito usando o módulo pkgutil para verificar se a biblioteca está disponível e o módulo subprocess para instalar a biblioteca usando o comando pip.
 
